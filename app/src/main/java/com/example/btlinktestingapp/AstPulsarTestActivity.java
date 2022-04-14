@@ -526,7 +526,21 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
     public void serverCallComplete(String uniqueLinkName, boolean status) {
 
-        if (!uniqueLinkName.equals("") && AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")) {
+        if(status) {
+            new AstPulsarTestActivity.setserialnumber().execute(batchID, uniqueLinkName);
+        } else {
+            TestResult = "Incomplete";
+            //Toast.makeText(this, "Something went wrong. please try again.", Toast.LENGTH_LONG).show();
+        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btn_finish.setVisibility(View.VISIBLE);
+            }
+        }, 2000);
+
+        /////////////////////////////////////////////////////////////////////////////
+        /*if (!uniqueLinkName.equals("") && AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")) {
             Log.i(TAG, "UniqueLinkName returned ny server:" + uniqueLinkName);
             edt_set_no.setText(uniqueLinkName);
             edt_set_no.setVisibility(View.VISIBLE);
@@ -540,7 +554,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                     btn_finish.setVisibility(View.VISIBLE);
                 }
             }, 2000);
-        }
+        }*/
 
     }
 
