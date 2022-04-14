@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="BigGoNutton">125dp</dimen>
+    <dimen name="NormalButton">43dp</dimen>
+    <dimen name="mediumButton">32dp</dimen>
+</resources>

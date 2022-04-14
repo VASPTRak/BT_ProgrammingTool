@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="BigGoNutton">40dp</dimen>
+    <dimen name="NormalButton">33dp</dimen>
+    <dimen name="mediumButton">12dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>
