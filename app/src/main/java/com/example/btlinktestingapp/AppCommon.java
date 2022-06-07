@@ -24,6 +24,8 @@ public class AppCommon {
 
     public static String chk_changelinkname_status = "Y";
     public static String chk_astlink_status = "N";
+    public static String FOLDER_BIN = "FSBin";
+    public static boolean IsNewBTFirmware = false;
 
     public static void WriteInternalFile(LaunchingActivity launchingActivity, String data) {
 

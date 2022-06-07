@@ -36,6 +36,8 @@ public class BTLinkLeServiceCode extends Service {
 
     private String UUID_service = "725e0bc8-6f00-4d2d-a4af-96138ce599b6"; //first service UUID
     private String UUID_char = "e49227e8-659f-4d7e-8e23-8c6eea5b9173"; //first characteristic UUID
+    private String UUID_service_BT = "725e0bc8-6f00-4d2d-a4af-96138ce599b9"; //BT LINK NEW service UUID
+
 
     private String UUID_service_file = "725e0bc8-6f00-4d2d-a4af-96138ce599b7";//7
     private String UUID_char_file = "e49227e8-659f-4d7e-8e23-8c6eea5b9174";//4
@@ -108,11 +110,16 @@ public class BTLinkLeServiceCode extends Service {
 
 
                 List<BluetoothGattService> services = gatt.getServices();
+                AppCommon.IsNewBTFirmware = false;
                 for (BluetoothGattService service : services) {
                     String suuid = String.valueOf(service.getUuid());
-                    if (!suuid.equals(UUID_service))
+                    if (!suuid.equals(UUID_service) && !suuid.equals(UUID_service_BT))
                         continue;
 
+                    if (suuid.equals(UUID_service_BT)) {
+                        UUID_service = UUID_service_BT;
+                        AppCommon.IsNewBTFirmware = true;
+                    }
                     List<BluetoothGattCharacteristic> gattCharacteristics =
                             service.getCharacteristics();
 
@@ -226,9 +233,11 @@ public class BTLinkLeServiceCode extends Service {
                 stringBuilder.append(String.format("%02X ", byteChar));
 
             System.out.println("QR data2----" + stringBuilder.toString());
-            intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-
-
+            if (AppCommon.IsNewBTFirmware) {
+                intent.putExtra(EXTRA_DATA, new String(data));
+            } else {
+                intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
+            }
         }
 
         sendBroadcast(intent);
@@ -520,7 +529,8 @@ public class BTLinkLeServiceCode extends Service {
         try {
 
 
-            String inputFile = Environment.getExternalStorageDirectory().toString() + "/" + "FSBin" + "/LINK_BLUE.bin";
+            //String inputFile = Environment.getExternalStorageDirectory().toString() + "/" + "FSBin" + "/LINK_BLUE.bin";
+            String inputFile = getApplicationContext().getExternalFilesDir(AppCommon.FOLDER_BIN) + "/LINK_BLUE.bin";
 
             long fileSize = new File(inputFile).length();
             long tempfileSize = fileSize;

@@ -417,36 +417,59 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         if (data != null) {
             try {
 
-                String[] Seperate = data.split("\n");
+                if (!AppCommon.IsNewBTFirmware) {
+                    String[] Seperate = data.split("\n");
 
-                String last_val = "";
-                if (Seperate.length > 1) {
+                    String last_val = "";
+                    if (Seperate.length > 1) {
 
-                    String respStr = Seperate[0];
-                    String respHex = Seperate[1];
+                        String respStr = Seperate[0];
+                        String respHex = Seperate[1];
 
-                    btLinkResponse = respStr;
+                        btLinkResponse = respStr;
 
-                    if (respStr.contains("pulse")) {
-                        pulseStarted = true;
-                        btLinkPulses = respStr;
-                        tv_qty.setText("  " + respStr + "  ");
-                        tv_qtyb.setText("  " + respStr + "  ");
-                        splitRespStr(respStr);
+                        if (respStr.contains("pulse")) {
+                            pulseStarted = true;
+                            btLinkPulses = respStr;
+                            tv_qty.setText("  " + respStr + "  ");
+                            tv_qtyb.setText("  " + respStr + "  ");
+                            splitRespStr(respStr);
+                        } else {
+                            //tv_qty.setText("");
+                            //tv_qtyb.setText("");
+                        }
+
+
+                        System.out.println("-Qrcode data sep1>>" + respStr);
+                        System.out.println("-Qrcode data sep2>>" + respHex);
+
+                        last_val = Seperate[Seperate.length - 1];
                     } else {
-                        //tv_qty.setText("");
-                        //tv_qtyb.setText("");
+                        System.out.println("-Qrcode data>>" + data);
                     }
-
-
-                    System.out.println("-Qrcode data sep1>>" + respStr);
-                    System.out.println("-Qrcode data sep2>>" + respHex);
-
-                    last_val = Seperate[Seperate.length - 1];
                 } else {
-                    System.out.println("-Qrcode data>>" + data);
-                }
+                    String newRespStr = data.replace("$$", "");
 
+                    btLinkResponse = newRespStr;
+
+                    if (newRespStr.contains("pulse")) {
+                        try {
+                            // Changing {"pulse":1} to pulse:1
+                            newRespStr = newRespStr.replaceAll("\"", "").replaceAll("\\{", "").replaceAll("\\}", "");
+                            newRespStr = String.join(": ", newRespStr.split(":")); // To change pulse:1 to pulse: 1
+                        } catch (Exception ex) {
+                            System.out.println(ex);
+                            newRespStr = data.replace("$$", "");
+                        }
+
+                        pulseStarted = true;
+                        btLinkPulses = newRespStr;
+                        tv_qty.setText("  " + newRespStr + "  ");
+                        tv_qtyb.setText("  " + newRespStr + "  ");
+                        splitRespStr(newRespStr);
+                    }
+                    System.out.println("-displayData new BT Firmware data >>" + newRespStr);
+                }
 
             } catch (Exception ex) {
                 System.out.println(ex);
