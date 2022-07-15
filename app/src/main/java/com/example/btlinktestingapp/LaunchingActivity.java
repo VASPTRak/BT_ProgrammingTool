@@ -56,6 +56,7 @@ public class LaunchingActivity extends AppCompatActivity {
         Button btn_history = (Button) findViewById(R.id.btn_history);
         chk_changelinkname = (CheckBox) findViewById(R.id.chk_changelinkname);
         chk_astlink = (CheckBox) findViewById(R.id.chk_astlink);
+        Button btnPrint = (Button) findViewById(R.id.btnPrint);
 
 
         tv_appversion.setText("Version:" + AppCommon.getVersionCode(LaunchingActivity.this));
@@ -76,7 +77,19 @@ public class LaunchingActivity extends AppCompatActivity {
         btn_go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppCommon.IsPrint = false;
                 Intent i = new Intent(LaunchingActivity.this, ScanDeviceActivity.class);//ScanDeviceActivity
+                LaunchingActivity.this.startActivity(i);
+            }
+        });
+
+        btnPrint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppCommon.IsPrint = true;
+                Intent i = new Intent(LaunchingActivity.this, ScanDeviceActivity.class); //LabelPrintingActivity
+                //i.putExtra("DeviceName", "PT-P300BT4197"); //PT-P300BT4197
+                //i.putExtra("DeviceMac", "EC:79:49:29:37:75"); //EC:79:49:29:37:75
                 LaunchingActivity.this.startActivity(i);
             }
         });
@@ -141,6 +154,7 @@ public class LaunchingActivity extends AppCompatActivity {
 
         } catch (Exception ex) {
             Log.e(TAG, ex.getMessage());
+            AppCommon.WriteInFile(LaunchingActivity.this, TAG + " Exception in checkPermissionTask: " + ex.getMessage());
         }
 
         //Enable bluetooth
@@ -181,7 +195,7 @@ public class LaunchingActivity extends AppCompatActivity {
         boolean isValue = false;
 
         try {
-            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE};
+            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
             boolean isGranted = false;
             for (String per : permissions) {

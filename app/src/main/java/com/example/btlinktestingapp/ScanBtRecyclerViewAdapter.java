@@ -86,13 +86,18 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
 
 
                     //open next activity
-                    if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y")){
-                        Intent intent = new Intent(mContext,AstPulsarTestActivity.class);
+                    if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y")) {
+                        Intent intent = new Intent(mContext, AstPulsarTestActivity.class);
                         intent.putExtra("DeviceName", mBTNames.get(position));
                         intent.putExtra("DeviceMac", mBTMac.get(position));
                         mContext.startActivity(intent);
-                    }else{
-                        Intent intent = new Intent(mContext,PulsarTestActivity.class);
+                    } else {
+                        Intent intent = null;
+                        if (!AppCommon.IsPrint) {
+                            intent = new Intent(mContext, PulsarTestActivity.class);
+                        } else {
+                            intent = new Intent(mContext, LabelPrintingActivity.class);
+                        }
                         intent.putExtra("DeviceName", mBTNames.get(position));
                         intent.putExtra("DeviceMac", mBTMac.get(position));
                         mContext.startActivity(intent);

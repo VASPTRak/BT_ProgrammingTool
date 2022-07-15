@@ -28,7 +28,7 @@ import java.util.TimerTask;
 
 public class ScanDeviceActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "ScanDeviceActivity ";
     public final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
     private TextView tv_message;
@@ -181,6 +181,7 @@ public class ScanDeviceActivity extends AppCompatActivity {
             mBluetoothAdapter.startDiscovery();
         }catch (Exception e){
             e.printStackTrace();
+            AppCommon.WriteInFile(ScanDeviceActivity.this, TAG + "Exception in bluetoothScanning: " + e.getMessage());
         }
 
     }
@@ -194,31 +195,31 @@ public class ScanDeviceActivity extends AppCompatActivity {
 
                 try {
 
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    String deviceName = device.getName();
+                    String deviceHardwareAddress = device.getAddress(); // MAC address
 
-                if (!ScanBtRecyclerViewAdapter.NearByBTDevices.contains(deviceHardwareAddress)) {
-                    ScanBtRecyclerViewAdapter.NearByBTDevices.add(deviceHardwareAddress);
-                    Log.i(TAG, "BT Scan deviceName:" + deviceName + " MacAddress:" + deviceHardwareAddress);
-                }
+                    if (!ScanBtRecyclerViewAdapter.NearByBTDevices.contains(deviceHardwareAddress)) {
+                        ScanBtRecyclerViewAdapter.NearByBTDevices.add(deviceHardwareAddress);
+                        Log.i(TAG, "BT Scan deviceName:" + deviceName + " MacAddress:" + deviceHardwareAddress);
+                    }
 
-                if (!mImageUrls.contains(deviceHardwareAddress)) {
-                    mImageUrls.add(deviceHardwareAddress);
-                    mNames.add(deviceName);
-                    Log.i(TAG, "DeviceName:" + deviceName + "\n" + "MacAddress:" + deviceHardwareAddress);
-                }
+                    if (!mImageUrls.contains(deviceHardwareAddress)) {
+                        mImageUrls.add(deviceHardwareAddress);
+                        mNames.add(deviceName);
+                        Log.i(TAG, "DeviceName:" + deviceName + "\n" + "MacAddress:" + deviceHardwareAddress);
+                    }
 
                     adapter.notifyDataSetChanged();
                     // initRecyclerView();
 
-            }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
+                    AppCommon.WriteInFile(ScanDeviceActivity.this, TAG + "Exception in BroadcastReceiver: " + e.getMessage());
                 }
             }
-
 
         }
     };
@@ -233,7 +234,11 @@ public class ScanDeviceActivity extends AppCompatActivity {
                 public void run() {
 
                     if (mImageUrls != null && mImageUrls.size() > 0) {
-                        runthisOnUi("Please select “FSBT-Undertest”");
+                        String msg = "Please select “FSBT-Undertest”";
+                        if (AppCommon.IsPrint) {
+                            msg = "Please select printer";
+                        }
+                        runthisOnUi(msg);
                         Scantimer.cancel();
                     } else {
                         if (Count > 15) {
@@ -246,7 +251,10 @@ public class ScanDeviceActivity extends AppCompatActivity {
 
             };
             Scantimer.schedule(ttSensor, 1000, 1000);
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+            AppCommon.WriteInFile(ScanDeviceActivity.this, TAG + "Exception in CheckFordevices: " + e.getMessage());
+        }
     }
 
     public void runthisOnUi(String msg){

@@ -20,7 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BTLinkTestingApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AstPulsarTestActivity"></activity>
+        <activity
+            android:name=".LabelPrintingActivity"
+            android:exported="false" />
+        <activity android:name=".AstPulsarTestActivity" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".HistoryActivity"

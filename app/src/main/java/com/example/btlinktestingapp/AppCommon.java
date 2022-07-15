@@ -6,15 +6,18 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Environment;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
@@ -26,6 +29,8 @@ public class AppCommon {
     public static String chk_astlink_status = "N";
     public static String FOLDER_BIN = "FSBin";
     public static boolean IsNewBTFirmware = false;
+    public static boolean IsPrint = false;
+    public static String printerMacAddress = "";
 
     public static void WriteInternalFile(LaunchingActivity launchingActivity, String data) {
 
@@ -126,7 +131,55 @@ public class AppCommon {
             messageTextView.setTextSize(25);
             toast.show();
         }
-
-
     }
+
+    public static void WriteInFile(Context ctx, String str) {
+        try {
+
+            if (str.contains("Responce"))
+                str = str.replace("Responce", "Response");
+
+            System.out.println(str);
+
+            //File file = new File(Environment.getExternalStorageDirectory() + "/BTProgrammingTool");
+            File file = new File(String.valueOf(ctx.getExternalFilesDir("BTProgrammingTool")));
+
+            if (!file.exists()) {
+                if (file.mkdirs()) {
+                    //System.out.println("Create FSLog Folder");
+                } else {
+                    // System.out.println("Fail to create KavachLog folder");
+                }
+            }
+
+            String dt = GetDateString(System.currentTimeMillis());
+            File gpxfile = new File(file + "/Log_" + dt + ".txt");
+            if (!gpxfile.exists()) {
+                gpxfile.createNewFile();
+            }
+
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss");
+            String UseDate = dateFormat.format(cal.getTime());
+
+            FileWriter fileWritter = new FileWriter(gpxfile, true);
+            BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+            bufferWritter.write("\n" + UseDate + "--" + str + " ");
+            bufferWritter.close();
+
+        } catch (IOException e) {
+            WriteInFile(ctx, "WriteInFile Exception" + e);
+        }
+    }
+
+    public static String GetDateString(Long dateinms) {
+        try {
+            Time myDate = new Time();
+            myDate.set(dateinms);
+            return myDate.format("%Y-%m-%d");
+        } catch (Exception e1) {
+            return "";
+        }
+    } // Create logger functionality
+
 }

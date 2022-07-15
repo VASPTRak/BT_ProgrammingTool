@@ -23,14 +23,14 @@
         android:id="@+id/btn_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:text=" History "
         android:textSize="@dimen/NormalButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_go"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintTop_toBottomOf="@+id/btnPrint"
+        app:layout_constraintVertical_bias="0.141" />
 
     <TextView
         android:id="@+id/tv_appversion"
@@ -46,18 +46,18 @@
 
     <!--Ad hoc toast Textview-->
     <TextView
+        android:id="@+id/ad_hoc_toast_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:layout_alignParentBottom="true"
         android:layout_margin="18dp"
         android:background="@drawable/ad_hoc_toast_background"
-        android:textColor="#1e1e1e"
         android:gravity="center"
+        android:padding="12dp"
+        android:textColor="#1e1e1e"
         android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/ad_hoc_toast_textview"
-        tools:text="Temporary message bla bla bla ..."
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:text="Temporary message bla bla bla ..." />
 
     <CheckBox
         android:id="@+id/chk_changelinkname"
@@ -82,5 +82,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.767" />
+
+    <Button
+        android:id="@+id/btnPrint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="PRINT"
+        android:textSize="@dimen/NormalButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_go" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
