@@ -2,29 +2,40 @@ package com.example.btlinktestingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.hardware.usb.UsbManager;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.text.Html;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +47,7 @@ import android.widget.Toast;
 
 import com.brother.ptouch.sdk.CustomPaperInfo;
 import com.brother.ptouch.sdk.LabelInfo;
+import com.brother.ptouch.sdk.PaperKind;
 import com.brother.ptouch.sdk.Printer;
 import com.brother.ptouch.sdk.PrinterInfo;
 import com.brother.ptouch.sdk.PrinterStatus;
@@ -64,17 +76,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
 
 public class LabelPrintingActivity extends AppCompatActivity {
 
-    //public PTPrintSettings ptPrintSettings;
-    //public Gson gson;
-    //private SharedPreferences sharedPreferences;
-
-    /*private PrinterModel currentModel() {
-        String modelString = sharedPreferences.getString("printerModel", "");
-        return PrinterModel.valueOf(modelString);
-    }*/
     private static final String TAG = "LabelPrintingActivity ";
     private String printerName = "", printerMacAddress = "";
     public static Printer myPrinter;
@@ -93,7 +98,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
         AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Started-----");
         EditText etLabelToPrint = (EditText) findViewById(R.id.etLabelToPrint);
         Button btnPrintLabel = (Button) findViewById(R.id.btnPrintLabel);
-        Button btnPrint2 = (Button) findViewById(R.id.btnPrint2);
+        //Button btnPrint2 = (Button) findViewById(R.id.btnPrint2);
         Button btnPreview = (Button) findViewById(R.id.btnPreview);
         TextView tvPrinterName = (TextView) findViewById(R.id.tvPrinterName);
         TextView tvPrinterMAC = (TextView) findViewById(R.id.tvPrinterMAC);
@@ -116,6 +121,12 @@ public class LabelPrintingActivity extends AppCompatActivity {
         editor.commit();
         //=======================================================
 
+        // Check printer is in paired bluetooth devices
+        if (!CheckIfPresentInPairedDeviceList(printerMacAddress)) {
+            showMessageDialog(LabelPrintingActivity.this, getResources().getString(R.string.PrinterNotInPairList));
+        }
+        //=======================================================
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -136,32 +147,62 @@ public class LabelPrintingActivity extends AppCompatActivity {
         btnPrintLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String textToPrint = etLabelToPrint.getText().toString();
-                if (textToPrint.trim().isEmpty()) {
-                    Toast.makeText(LabelPrintingActivity.this, "Please enter any label to print", Toast.LENGTH_LONG).show();
-                } else {
-                    AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Entered Label: " + textToPrint);
-                    AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "PRINT button clicked.");
+                if (!CheckIfPresentInPairedDeviceList(printerMacAddress)) {
+                    String textToPrint = etLabelToPrint.getText().toString();
+                    if (textToPrint.trim().isEmpty()) {
+                        Toast.makeText(LabelPrintingActivity.this, "Please enter any label to print", Toast.LENGTH_LONG).show();
+                    } else {
+                        AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Entered Label: " + textToPrint);
+                        AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "PRINT button clicked.");
 
-                    PrintLabels1(textToPrint.trim());
+                        PrintLabels1(textToPrint.trim());
+                    }
+                } else {
+                    showMessageDialog(LabelPrintingActivity.this, getResources().getString(R.string.PrinterNotInPairList));
                 }
             }
         });
 
-        btnPrint2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*String textToPrint = etLabelToPrint.getText().toString();
-                if (textToPrint.trim().isEmpty()) {
-                    Toast.makeText(LabelPrintingActivity.this, "Please enter any label to print", Toast.LENGTH_LONG).show();
-                } else {
-                    AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Entered Label: " + textToPrint);
-                    AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "PRINT 2 button clicked.");
-                    PrintLabels2(textToPrint.trim());
-                }*/
-            }
-        });
+    }
 
+    public boolean CheckIfPresentInPairedDeviceList(String printerMacAddress){
+
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        // Get paired devices.
+        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        if (pairedDevices.size() > 0) {
+            // There are paired devices. Get the name and address of each paired device.
+            for (BluetoothDevice device : pairedDevices) {
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                if (deviceHardwareAddress.equalsIgnoreCase(printerMacAddress)){
+                    device.createBond();
+                    return true;
+                }
+            }
+
+        }
+        AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Selected device is not in bluetooth pair devices list. (Device Name: " + printerName + "; Device Mac Address: " + printerMacAddress + ")");
+        return false;
+    }
+
+    public void showMessageDialog(final Activity context, String message) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        alertDialogBuilder
+                .setMessage(message)
+                .setCancelable(false)
+                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                        Intent btSettings = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+                        startActivity(btSettings);
+                    }
+                });
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // show it
+        alertDialog.show();
     }
 
     @Override
@@ -193,20 +234,30 @@ public class LabelPrintingActivity extends AppCompatActivity {
             paint.setTextSize(textSize);
             paint.setColor(Color.WHITE); // Color.parseColor("#FAF9F6")); //#FAF9F6
             paint.setTextAlign(Paint.Align.LEFT);
+            //paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
             float baseline = -paint.ascent();
-            int width = (int) (paint.measureText(text) + 0.5f);
+            int width = (int) (paint.measureText(text + "   ") + 0.5f);
             int height = (int) (baseline + paint.ascent() + 0.5f);
             image = Bitmap.createBitmap(width + 20, height + 100, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(image);
             canvas.drawRect(0, 0, width + 20, height + 100, paint);
             paint.setColor(textColor);
-            canvas.drawText(text, 0, baseline, paint);
+            canvas.drawText(text + "   ", 0, baseline, paint);
 
         } catch (Exception e) {
             Log.i(TAG, "Exception in textToBitmap: " + e.getMessage());
             AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in textToBitmap: " + e.getMessage());
         }
         return image;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int height) {
+        float ratio = Math.min(
+                (float) newWidth / bm.getWidth(),
+                (float) height / bm.getHeight());
+        int width = Math.round((float) ratio * bm.getWidth());
+
+        return Bitmap.createScaledBitmap(bm, width, height, false);
     }
 
     //region Method 1
@@ -253,14 +304,14 @@ public class LabelPrintingActivity extends AppCompatActivity {
             printerInfo.printQuality = PrinterInfo.PrintQuality.HIGH_RESOLUTION;
             printerInfo.macAddress = printerMacAddress;
             printerInfo.workPath = getApplicationContext().getCacheDir().getPath(); //String.valueOf(getApplicationContext().getExternalFilesDir("PrintMaterial"));
-            printerInfo.trimTapeAfterData = true;
+            //printerInfo.trimTapeAfterData = true;
             printerInfo.margin.left = 0;
             printerInfo.margin.top = 0;
 
             printerInfo.labelNameIndex = LabelInfo.PT3.valueOf(selectedPaperSize).ordinal();
             printerInfo.labelMargin = 0;
             printerInfo.isAutoCut = false;
-            printerInfo.isCutAtEnd = false;
+            printerInfo.isCutAtEnd = true;
             printerInfo.isHalfCut = false;
             printerInfo.isSpecialTape = false;
             printerInfo.isCutMark = true;
@@ -268,9 +319,11 @@ public class LabelPrintingActivity extends AppCompatActivity {
             myPrinter.setPrinterInfo(printerInfo);
 
             ImageToPrint = textToBitmap(textToPrint, 90, Color.BLACK);
-            //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
+            /*bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
+            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 3, ImageToPrint.getHeight());
+            bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1_new.png");*/
 
-            print2();
+            //print2();
         } catch (Exception e) {
             e.printStackTrace();
             AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in PrintLabels1: " + e.getMessage());
@@ -303,102 +356,6 @@ public class LabelPrintingActivity extends AppCompatActivity {
             AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in print2: " + e.getMessage());
         }
         AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "======================================================");
-    }
-
-    /*protected class PrinterThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                printResult = new PrinterStatus();
-                myPrinter.startCommunication();
-                AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Communication Started---");
-                printResult = myPrinter.printImage(ImageToPrint);
-
-                //File file = bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel.png");
-                //printResult = myPrinter.printFile(file.toString());
-
-                if (printResult.errorCode != PrinterInfo.ErrorCode.ERROR_NONE) {
-                    // print success
-                }
-                AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "printResult: " + printResult.errorCode);
-                myPrinter.endCommunication();
-                AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Communication End---");
-            } catch (Exception e) {
-                AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in PrinterThread: " + e.getMessage());
-            }
-        }
-    }*/
-    //endregion
-
-    //region Method 2
-    public void PrintLabels2(String textToPrint) {
-        try {
-            ImageToPrint = textToBitmap(textToPrint, 90, Color.BLACK);
-            File file = bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel.png");
-
-            V4PrinterThread printThread = new V4PrinterThread(this, file);
-            printThread.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in PrintLabels2: " + e.getMessage());
-        }
-    }
-
-    public PrintSettings getPrintSettings(Context context) {
-        PTPrintSettings ptPrintSettings = new PTPrintSettings(PrinterModel.PT_P300BT);
-        File dir = context.getExternalFilesDir("PrintMaterial");
-        ptPrintSettings.setLabelSize(PTPrintSettings.LabelSize.Width12mm);
-        ptPrintSettings.setVAlignment(PrintImageSettings.VerticalAlignment.Center);
-        ptPrintSettings.setHAlignment(PrintImageSettings.HorizontalAlignment.Center);
-        ptPrintSettings.setWorkPath(dir.toString());
-        ptPrintSettings.setAutoCut(true);
-        return ptPrintSettings;
-    }
-
-    private class V4PrinterThread extends Thread {
-        final Context context;
-        final File fileToPrint;
-
-        private V4PrinterThread(Context context, File file) {
-            this.context = context;
-            this.fileToPrint = file;
-        }
-
-        @Override
-        public void run() {
-
-            try {
-
-                Channel channel = Channel.newBluetoothChannel(printerMacAddress, BluetoothAdapter.getDefaultAdapter());
-
-                // Create a `PrinterDriver` instance
-                PrinterDriverGenerateResult result = PrinterDriverGenerator.openChannel(channel);
-                if (result.getError().getCode() != OpenChannelError.ErrorCode.NoError) {
-                    AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "ErrorCode in V4PrinterThread: " + result.getError().getCode().toString());
-                    return;
-                }
-
-                PrinterDriver printerDriver = result.getDriver();
-
-                // Initialize `PrintSettings`
-                PrintSettings printSettings = getPrintSettings(context);
-
-                PrintError printError = printerDriver.printImage(String.valueOf(fileToPrint), printSettings);
-
-                AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Result - Print Image: " + printError.getCode());
-                if (printError.getCode() != PrintError.ErrorCode.NoError) {
-                    printerDriver.closeChannel();
-                    AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Error - Print Image: " + printError.getCode());
-                    return;
-                }
-
-                printerDriver.closeChannel();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in V4PrinterThread: " + e.getMessage());
-            }
-        }
     }
 
     public static File bitmapToFile(Context context, Bitmap bitmap, String fileNameToSave) {

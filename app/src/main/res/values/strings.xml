@@ -9,4 +9,5 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="PrinterNotInPairList">The printer you have selected is not currently paired. We are advancing to the BlueTooth Settings page. Once you see the printer name which you are attempting to select, select it on the next page and then click pair. If you do not see this printer in the next page, reset power and try again.</string>
 </resources>
