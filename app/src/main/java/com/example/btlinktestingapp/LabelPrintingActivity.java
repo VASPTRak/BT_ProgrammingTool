@@ -86,8 +86,8 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public static Bitmap ImageToPrint;
     protected PrinterStatus printResult;
     protected PrinterInfo printerInfo;
-    public RadioGroup rdSizeGroup;
-    public RadioButton rdSelectedSize;
+    //public RadioGroup rdSizeGroup;
+    //public RadioButton rdSelectedSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
         Button btnPreview = (Button) findViewById(R.id.btnPreview);
         TextView tvPrinterName = (TextView) findViewById(R.id.tvPrinterName);
         TextView tvPrinterMAC = (TextView) findViewById(R.id.tvPrinterMAC);
-        rdSizeGroup = (RadioGroup) findViewById(R.id.rdSizeGroup);
+        //rdSizeGroup = (RadioGroup) findViewById(R.id.rdSizeGroup);
 
         Intent intent = getIntent();
         printerName = intent.getStringExtra("DeviceName");
@@ -147,7 +147,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
         btnPrintLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!CheckIfPresentInPairedDeviceList(printerMacAddress)) {
+                if (CheckIfPresentInPairedDeviceList(printerMacAddress)) {
                     String textToPrint = etLabelToPrint.getText().toString();
                     if (textToPrint.trim().isEmpty()) {
                         Toast.makeText(LabelPrintingActivity.this, "Please enter any label to print", Toast.LENGTH_LONG).show();
@@ -219,7 +219,11 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public void PrintPreview(String textToPrint) {
         try {
             ImageView ivPreview = (ImageView) findViewById(R.id.iv_Preview);
-            ivPreview.setImageBitmap(textToBitmap(textToPrint, 80, Color.BLACK));
+
+            Bitmap img = textToBitmap(textToPrint, 80, Color.BLACK);
+            img = getResizedBitmap(img, img.getWidth() / 3, img.getHeight());
+
+            ivPreview.setImageBitmap(img);
 
         } catch (Exception e) {
             Log.i(TAG, "Exception in PrintPreview: " + e.getMessage());
@@ -230,6 +234,8 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public Bitmap textToBitmap(String text, float textSize, int textColor) {
         Bitmap image = null;
         try {
+            text = text + " : " + text + " : " + text;
+
             Paint paint = new Paint();
             paint.setTextSize(textSize);
             paint.setColor(Color.WHITE); // Color.parseColor("#FAF9F6")); //#FAF9F6
@@ -264,11 +270,11 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public void PrintLabels1(String textToPrint) {
 
         try {
-            int selectedSize = rdSizeGroup.getCheckedRadioButtonId();
-            rdSelectedSize = (RadioButton) findViewById(selectedSize);
+            //int selectedSize = rdSizeGroup.getCheckedRadioButtonId();
+            //rdSelectedSize = (RadioButton) findViewById(selectedSize);
 
             String selectedPaperSize = "W12";
-            String selectedPaperSizeRD = "12";
+            /*String selectedPaperSizeRD = "12";
             if (rdSelectedSize != null) {
                 selectedPaperSizeRD = rdSelectedSize.getText().toString().replace("mm", "").trim();
             }
@@ -288,7 +294,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
                     break;
                 default:
                     break;
-            }
+            }*/
 
             myPrinter = new Printer();
             myPrinter.setBluetooth(BluetoothAdapter.getDefaultAdapter());
@@ -319,11 +325,11 @@ public class LabelPrintingActivity extends AppCompatActivity {
             myPrinter.setPrinterInfo(printerInfo);
 
             ImageToPrint = textToBitmap(textToPrint, 90, Color.BLACK);
-            /*bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
+            //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
             ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 3, ImageToPrint.getHeight());
-            bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1_new.png");*/
+            //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1_new.png");
 
-            //print2();
+            print2();
         } catch (Exception e) {
             e.printStackTrace();
             AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in PrintLabels1: " + e.getMessage());
