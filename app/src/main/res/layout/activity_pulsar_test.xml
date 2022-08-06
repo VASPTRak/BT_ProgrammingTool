@@ -84,19 +84,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.219" />
 
-        <Button
-            android:id="@+id/btn_pass_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PASS test"
-            android:textSize="@dimen/NormalButton"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/green"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.461" />
+<!--        <Button-->
+<!--            android:id="@+id/btn_pass_test"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="PASS test"-->
+<!--            android:textSize="@dimen/NormalButton"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:backgroundTint="@color/green"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.461" />-->
 
         <Button
             android:id="@+id/btn_fail_test"
@@ -152,19 +152,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.219" />
 
-        <Button
-            android:id="@+id/btn_pass_testb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PASS test"
-            android:textSize="@dimen/NormalButton"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/green"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.461" />
+<!--        <Button-->
+<!--            android:id="@+id/btn_pass_testb"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="PASS test"-->
+<!--            android:textSize="@dimen/NormalButton"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:backgroundTint="@color/green"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.461" />-->
 
         <Button
             android:id="@+id/btn_fail_testb"
@@ -294,17 +294,34 @@
         app:layout_constraintTop_toBottomOf="@+id/edt_set_no"
         app:layout_constraintVertical_bias="0.16" />
 
+
+    <Button
+        android:id="@+id/btnPrint3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Print"
+        android:textSize="@dimen/NormalButton"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.465" />
+
     <Button
         android:id="@+id/btn_finish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="finish"
-        android:visibility="gone"
         android:textSize="@dimen/NormalButton"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.607" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -58,6 +58,17 @@
                 android:layout_centerVertical="true"
                 android:textSize="22sp"/>
 
+            <Button
+                android:id="@+id/btnPrint3"
+                android:layout_width="147dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="0dp"
+                android:layout_marginLeft="35dp"
+                android:text="Print"
+                android:textAlignment="center"
+
+                />
+
         </TableRow>
 
         <TableRow>
@@ -102,8 +113,11 @@
                 android:layout_centerVertical="true"
                 android:textSize="22sp"/>
 
+
+
         </TableRow>
 
     </TableLayout>
+
 
 </LinearLayout>

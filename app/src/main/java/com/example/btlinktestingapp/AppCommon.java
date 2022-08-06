@@ -29,8 +29,9 @@ public class AppCommon {
     public static String chk_astlink_status = "N";
     public static String FOLDER_BIN = "FSBin";
     public static boolean IsNewBTFirmware = false;
-    public static boolean IsPrint = false;
+    public static boolean IsPrint = true;
     public static String printerMacAddress = "";
+    public static String LinkNameToPrint = "";
 
     public static void WriteInternalFile(LaunchingActivity launchingActivity, String data) {
 

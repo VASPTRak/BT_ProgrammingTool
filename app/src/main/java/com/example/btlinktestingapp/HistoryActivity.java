@@ -6,20 +6,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.brother.ptouch.sdk.Printer;
+import com.brother.ptouch.sdk.PrinterInfo;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,10 +41,11 @@ import okhttp3.Response;
 
 public class HistoryActivity extends AppCompatActivity {
 
-     final String TAG = HistoryActivity.class.getSimpleName();
+     static final String TAG = HistoryActivity.class.getSimpleName();
      ArrayList<HashMap<String,String>> ListOfHistoryData = new ArrayList<>();
     RecyclerView recycleier_history;
     HistoryRecyclerViewAdapter madapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +56,21 @@ public class HistoryActivity extends AppCompatActivity {
         madapter = new HistoryRecyclerViewAdapter(this, ListOfHistoryData);
         recycleier_history.setAdapter(madapter);
         recycleier_history.setLayoutManager(new LinearLayoutManager(this));
+      //  btn_print3 = findViewById(R.id.btnPrint3);
+
+
+//        btn_print3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //Toast.makeText(HistoryActivity.this, "Hi", Toast.LENGTH_SHORT).show();
+//                //PrintLabels(bitmapToFile(""));
+//                Toast.makeText(HistoryActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
+//
+//
+//
+//
+//            }
+//        });
 
         //setTitle("Top pulser test");
 
@@ -59,6 +85,13 @@ public class HistoryActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
+
+
+
 
     @Override
     public boolean onSupportNavigateUp() {

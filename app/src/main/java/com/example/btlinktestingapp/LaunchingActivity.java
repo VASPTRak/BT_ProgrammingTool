@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.Set;
 
 public class LaunchingActivity extends AppCompatActivity {
 
@@ -91,6 +93,9 @@ public class LaunchingActivity extends AppCompatActivity {
                 //i.putExtra("DeviceName", "PT-P300BT4197"); //PT-P300BT4197
                 //i.putExtra("DeviceMac", "EC:79:49:29:37:75"); //EC:79:49:29:37:75
                 LaunchingActivity.this.startActivity(i);
+               // CheckIfPresentInPairedDeviceList("EC:79:49:29:2D:F8");
+
+
             }
         });
 
@@ -167,6 +172,27 @@ public class LaunchingActivity extends AppCompatActivity {
 
 
     }
+
+//    public boolean CheckIfPresentInPairedDeviceList(String printerMacAddress){
+//
+//        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        // Get paired devices.
+//        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+//        if (pairedDevices.size() > 0) {
+//            // There are paired devices. Get the name and address of each paired device.
+//            for (BluetoothDevice device : pairedDevices) {
+//                String deviceName = device.getName();
+//                String deviceHardwareAddress = device.getAddress(); // MAC address
+//                if (deviceHardwareAddress.equalsIgnoreCase(printerMacAddress)){
+//                    device.createBond();
+//                    return true;
+//                }
+//            }
+//
+//        }
+//        AppCommon.WriteInFile(LaunchingActivity.this, TAG + "Selected device is not in bluetooth pair devices list. (Device Name: " + "; Device Mac Address: " + printerMacAddress + ")");
+//        return false;
+//    }
 
     @Override
     protected void onResume() {

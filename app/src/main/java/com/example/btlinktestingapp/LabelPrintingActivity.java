@@ -86,6 +86,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public static Bitmap ImageToPrint;
     protected PrinterStatus printResult;
     protected PrinterInfo printerInfo;
+    Button btn_finish;
     //public RadioGroup rdSizeGroup;
     //public RadioButton rdSelectedSize;
 
@@ -100,6 +101,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
         Button btnPrintLabel = (Button) findViewById(R.id.btnPrintLabel);
         //Button btnPrint2 = (Button) findViewById(R.id.btnPrint2);
         Button btnPreview = (Button) findViewById(R.id.btnPreview);
+        Button btn_finish = (Button) findViewById(R.id.btn_finish);
         TextView tvPrinterName = (TextView) findViewById(R.id.tvPrinterName);
         TextView tvPrinterMAC = (TextView) findViewById(R.id.tvPrinterMAC);
         //rdSizeGroup = (RadioGroup) findViewById(R.id.rdSizeGroup);
@@ -112,6 +114,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
 
         tvPrinterName.setText("Printer Name: " + printerName);
         tvPrinterMAC.setText("MAC Address: " + printerMacAddress);
+        etLabelToPrint.setText(AppCommon.LinkNameToPrint);
 
         // Save printer info
         SharedPreferences sharedPref = LabelPrintingActivity.this.getSharedPreferences("PrinterInfo", Context.MODE_PRIVATE);
@@ -160,6 +163,16 @@ public class LabelPrintingActivity extends AppCompatActivity {
                 } else {
                     showMessageDialog(LabelPrintingActivity.this, getResources().getString(R.string.PrinterNotInPairList));
                 }
+            }
+        });
+
+        btn_finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(LabelPrintingActivity.this, LaunchingActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+
             }
         });
 

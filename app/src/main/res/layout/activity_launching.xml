@@ -90,6 +90,7 @@
         android:layout_marginTop="28dp"
         android:text="PRINT"
         android:textSize="@dimen/NormalButton"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
