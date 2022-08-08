@@ -56,23 +56,6 @@ public class HistoryActivity extends AppCompatActivity {
         madapter = new HistoryRecyclerViewAdapter(this, ListOfHistoryData);
         recycleier_history.setAdapter(madapter);
         recycleier_history.setLayoutManager(new LinearLayoutManager(this));
-      //  btn_print3 = findViewById(R.id.btnPrint3);
-
-
-//        btn_print3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //Toast.makeText(HistoryActivity.this, "Hi", Toast.LENGTH_SHORT).show();
-//                //PrintLabels(bitmapToFile(""));
-//                Toast.makeText(HistoryActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
-//
-//
-//
-//
-//            }
-//        });
-
-        //setTitle("Top pulser test");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -82,16 +65,7 @@ public class HistoryActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
         }
-
-
     }
-
-
-
-
-
-
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -106,7 +80,6 @@ public class HistoryActivity extends AppCompatActivity {
 
     public class getHistoryDetails extends AsyncTask<String, Void, String> {
 
-
         ProgressDialog pd;
 
         @Override
@@ -120,7 +93,6 @@ public class HistoryActivity extends AppCompatActivity {
             String resp = "";
 
             try {
-
 
                 OkHttpClient client = new OkHttpClient();
 
@@ -184,7 +156,6 @@ public class HistoryActivity extends AppCompatActivity {
                             map.put("LinkNameFromAPP", LinkNameFromAPP);
 
                             ListOfHistoryData.add(map);
-
 
                         }
 

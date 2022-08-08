@@ -99,7 +99,6 @@ public class LabelPrintingActivity extends AppCompatActivity {
         AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Started-----");
         EditText etLabelToPrint = (EditText) findViewById(R.id.etLabelToPrint);
         Button btnPrintLabel = (Button) findViewById(R.id.btnPrintLabel);
-        //Button btnPrint2 = (Button) findViewById(R.id.btnPrint2);
         Button btnPreview = (Button) findViewById(R.id.btnPreview);
         Button btn_finish = (Button) findViewById(R.id.btn_finish);
         TextView tvPrinterName = (TextView) findViewById(R.id.tvPrinterName);
@@ -172,7 +171,6 @@ public class LabelPrintingActivity extends AppCompatActivity {
                 Intent i = new Intent(LabelPrintingActivity.this, LaunchingActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
-
             }
         });
 

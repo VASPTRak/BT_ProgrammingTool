@@ -80,7 +80,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
         layout_toptest = (ConstraintLayout) findViewById(R.id.layout_toptest);
         layout_prepare_toptest = (ConstraintLayout) findViewById(R.id.layout_prepare_toptest);
         btn_conn_status = (Button) findViewById(R.id.btn_conn_status);
-       // btn_pass_test = (Button) findViewById(R.id.btn_pass_test);
+        //btn_pass_test = (Button) findViewById(R.id.btn_pass_test);
         btn_fail_test = (Button) findViewById(R.id.btn_fail_test);
         btn_set_no = (Button) findViewById(R.id.btn_set_no);
         btn_finish = (Button) findViewById(R.id.btn_finish);
@@ -92,14 +92,13 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
         edt_batch_number = (EditText) findViewById(R.id.edt_batch_number);
 
         btn_conn_status.setOnClickListener(this);
-      //  btn_pass_test.setOnClickListener(this);
+        //btn_pass_test.setOnClickListener(this);
         btn_fail_test.setOnClickListener(this);
         btn_set_no.setOnClickListener(this);
         btn_finish.setOnClickListener(this);
         btn_save_batchid.setOnClickListener(this);
         btn_go_to_top.setOnClickListener(this);
         btn_print3.setOnClickListener(this);
-
 
         Intent intent = getIntent();
         mDeviceName = intent.getStringExtra("DeviceName");
@@ -114,121 +113,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-
     }
-
-
-    public Bitmap textToBitmap(String text, float textSize, int textColor) {
-        Bitmap image = null;
-        try {
-            text = text + " : " + text + " : " + text;
-
-            Paint paint = new Paint();
-            paint.setTextSize(textSize);
-            paint.setColor(Color.WHITE); // Color.parseColor("#FAF9F6")); //#FAF9F6
-            paint.setTextAlign(Paint.Align.LEFT);
-            //paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-            float baseline = -paint.ascent();
-            int width = (int) (paint.measureText(text + "   ") + 0.5f);
-            int height = (int) (baseline + paint.ascent() + 0.5f);
-            image = Bitmap.createBitmap(width + 20, height + 100, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(image);
-            canvas.drawRect(0, 0, width + 20, height + 100, paint);
-            paint.setColor(textColor);
-            canvas.drawText(text + "   ", 0, baseline, paint);
-
-        } catch (Exception e) {
-            Log.i(TAG, "Exception in textToBitmap: " + e.getMessage());
-            AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + "Exception in textToBitmap: " + e.getMessage());
-        }
-        return image;
-    }
-
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int height) {
-        float ratio = Math.min(
-                (float) newWidth / bm.getWidth(),
-                (float) height / bm.getHeight());
-        int width = Math.round((float) ratio * bm.getWidth());
-
-        return Bitmap.createScaledBitmap(bm, width, height, false);
-    }
-
-    //region Method 1
-    public void PrintLabels(String textToPrint) {
-
-        try {
-
-
-            //  String selectedPaperSize = "W12";
-
-
-//            myPrinter = new Printer();
-//            myPrinter.setBluetooth(BluetoothAdapter.getDefaultAdapter());
-//
-//            printerInfo = myPrinter.getPrinterInfo();
-//            printerInfo.printerModel = PrinterInfo.Model.PT_P300BT;
-//            printerInfo.port = PrinterInfo.Port.BLUETOOTH;
-//            printerInfo.paperSize = PrinterInfo.PaperSize.CUSTOM;
-//            printerInfo.orientation = PrinterInfo.Orientation.LANDSCAPE;
-//            printerInfo.align = PrinterInfo.Align.LEFT;
-//            printerInfo.printMode = PrinterInfo.PrintMode.FIT_TO_PAGE;
-//            printerInfo.numberOfCopies = 1;
-//            printerInfo.printQuality = PrinterInfo.PrintQuality.HIGH_RESOLUTION;
-//            printerInfo.macAddress = printerMacAddress;
-//            printerInfo.workPath = getApplicationContext().getCacheDir().getPath(); //String.valueOf(getApplicationContext().getExternalFilesDir("PrintMaterial"));
-//            //printerInfo.trimTapeAfterData = true;
-//            printerInfo.margin.left = 0;
-//            printerInfo.margin.top = 0;
-//
-//            printerInfo.labelNameIndex = LabelInfo.PT3.valueOf(selectedPaperSize).ordinal();
-//            printerInfo.labelMargin = 0;
-//            printerInfo.isAutoCut = false;
-//            printerInfo.isCutAtEnd = true;
-//            printerInfo.isHalfCut = false;
-//            printerInfo.isSpecialTape = false;
-//            printerInfo.isCutMark = true;
-//
-//            myPrinter.setPrinterInfo(printerInfo);
-
-            ImageToPrint = textToBitmap(textToPrint, 90, Color.BLACK);
-            //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
-            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 3, ImageToPrint.getHeight());
-            bitmapToFile(AstPulsarTestActivity.this, ImageToPrint, mDeviceName+".png");
-
-            // print2();
-        } catch (Exception e) {
-            e.printStackTrace();
-            AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + "Exception in PrintLabels: " + e.getMessage());
-        }
-    }
-
-    public static File bitmapToFile(Context context, Bitmap bitmap, String fileNameToSave) {
-        //create a file to write bitmap data
-        File file = null;
-        try {
-            file = new File(context.getExternalFilesDir("PrintMaterial") + "/" + fileNameToSave);
-            file.createNewFile();
-
-            //Convert bitmap to byte array
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos);
-            byte[] bitmapdata = bos.toByteArray();
-
-            //write the bytes in file
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(bitmapdata);
-            fos.flush();
-            fos.close();
-            return file;
-        } catch (Exception e) {
-            e.printStackTrace();
-            AppCommon.WriteInFile(context, TAG + "Exception in bitmapToFile: " + e.getMessage());
-            return file; // it will return null
-        }
-    }
-
-
 
     @Override
     protected void onResume() {
@@ -266,9 +151,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
         if (TestResult.equalsIgnoreCase("Incomplete")) {
             Log.i(TAG, "*** Result ***\n MacAddress:" + mDeviceAddress + " LinkNameFromAPP:" + mDeviceName + "TestDateTime: 06/10/2021 BatchId:" + batchID + " TopPulserTestResult:" + TopTestResult +" TestResult" + TestResult);
         }
-
     }
-
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -296,7 +179,6 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BTLinkLeServiceCode.ACTION_GATT_CONNECTED.equals(action)) {
-
 
                 QR_ReaderStatus = "QR Connected";
                 System.out.println("ACTION_GATT_QR_CONNECTED");
@@ -350,7 +232,6 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.btn_save_batchid:
 
-
                 String bid = edt_batch_number.getText().toString().trim();
                 batchID = bid.toUpperCase();
 
@@ -367,7 +248,6 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                         Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
                     }
                 }
-
 
                 break;
 
@@ -451,12 +331,10 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                 break;
 
             case R.id.btnPrint3:
-//                PrintLabels(mDeviceName);
-//                Toast.makeText(AstPulsarTestActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
                 AppCommon.IsPrint = true;
                 AppCommon.LinkNameToPrint = mDeviceName;
                 Intent k = new Intent(AstPulsarTestActivity.this, ScanDeviceActivity.class);
-                AstPulsarTestActivity.this.startActivity(k);
+                startActivity(k);
                 break;
         }
     }
@@ -950,42 +828,43 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                         Log.i(TAG, "*** Result ***\n MacAddress:" + mDeviceAddress + " LinkNameFromAPP:" + mDeviceName + "TestDateTime: 06/10/2021 BatchId:" + batchID + " TopPulserTestResult:" + TopTestResult + " BottomPulserTestResult:" + BottomTestResult + " TestResult" + TestResult);
                     }
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                    AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Exception in setserialnumber onPostExecute: " + e.getMessage());
                     pd.cancel();
                 }
 
             } else {
                 pd.cancel();
                 Log.i(TAG, "setserialnumber InPost Response err:" + result);
+                AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " setserialnumber InPost Response err: " + result);
             }
 
         }
     }
 
-    public void test_top(){
-
-        RelayOffCommand();
-                TopTestResult = "P";
-                //Server call...
-                if (isConnecting()) {
-                    cancelTimer();
-                    layout_toptest.setVisibility(View.GONE);
-                    try {
-                        new AstPulsarTestActivity.UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+    public void test_pass_top() {
+        try {
+            RelayOffCommand();
+            TopTestResult = "P";
+            //Server call...
+            if (isConnecting()) {
+                cancelTimer();
+                layout_toptest.setVisibility(View.GONE);
+                try {
+                    new AstPulsarTestActivity.UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-
-
+            } else {
+                Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Exception in test_pass_top: " + e.getMessage());
+        }
     }
 
     private void splitRespStr(String respStr) {
-
         try {
             if (respStr.contains("pulse:")) {
 
@@ -994,14 +873,13 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                 Log.i(TAG, "Current qty:" + CurrentQty);
                 if (CurrentTest == 1 && CurrentQty > 30 && previousQty == 0) {
                     previousQty = CurrentQty;
-                  //  btn_pass_test.performClick();
-                    test_top();
+                    //btn_pass_test.performClick();
+                    test_pass_top();
                     Toast.makeText(getApplicationContext(), "Top test pass", Toast.LENGTH_LONG).show();
                 }
-
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Exception in splitRespStr: " + e.getMessage());
         }
 
     }

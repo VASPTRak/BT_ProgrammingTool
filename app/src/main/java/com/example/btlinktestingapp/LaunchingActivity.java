@@ -58,7 +58,7 @@ public class LaunchingActivity extends AppCompatActivity {
         Button btn_history = (Button) findViewById(R.id.btn_history);
         chk_changelinkname = (CheckBox) findViewById(R.id.chk_changelinkname);
         chk_astlink = (CheckBox) findViewById(R.id.chk_astlink);
-        Button btnPrint = (Button) findViewById(R.id.btnPrint);
+        //Button btnPrint = (Button) findViewById(R.id.btnPrint);
 
 
         tv_appversion.setText("Version:" + AppCommon.getVersionCode(LaunchingActivity.this));
@@ -85,7 +85,7 @@ public class LaunchingActivity extends AppCompatActivity {
             }
         });
 
-        btnPrint.setOnClickListener(new View.OnClickListener() {
+        /*btnPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AppCommon.IsPrint = true;
@@ -93,11 +93,8 @@ public class LaunchingActivity extends AppCompatActivity {
                 //i.putExtra("DeviceName", "PT-P300BT4197"); //PT-P300BT4197
                 //i.putExtra("DeviceMac", "EC:79:49:29:37:75"); //EC:79:49:29:37:75
                 LaunchingActivity.this.startActivity(i);
-               // CheckIfPresentInPairedDeviceList("EC:79:49:29:2D:F8");
-
-
             }
-        });
+        });*/
 
         btn_history.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,7 +166,6 @@ public class LaunchingActivity extends AppCompatActivity {
         }
 
         IsAppfirstTimeUse();
-
 
     }
 
