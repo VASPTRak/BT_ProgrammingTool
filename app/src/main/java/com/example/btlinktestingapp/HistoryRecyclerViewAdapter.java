@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brother.ptouch.sdk.Printer;
@@ -45,121 +44,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
         mContext = historyActivity;
         ListOfHistory = listOfHistoryData;
 
-
     }
-
-
-    public Bitmap textToBitmap(String text, float textSize, int textColor) {
-        Bitmap image = null;
-        try {
-            text = text + "  ";// + text + " : " + text;
-
-            Paint paint = new Paint();
-            paint.setTextSize(50);
-            paint.setColor(Color.WHITE); // Color.parseColor("#FAF9F6")); //#FAF9F6
-            paint.setTextAlign(Paint.Align.LEFT);
-            //paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-            paint.setTypeface(ResourcesCompat.getFont(mContext, R.font.kailasa2));
-            float baseline = -paint.ascent();
-            int width = (int) (paint.measureText(text + "   ") + 0.5f);
-            int height = (int) (baseline + paint.ascent() + 0.5f);
-            image = Bitmap.createBitmap(width + 20, height + 100, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(image);
-            canvas.drawRect(0, 0, width + 20, height + 100, paint);
-            paint.setColor(textColor);
-            canvas.drawText(text + "   ", 0, baseline, paint);
-
-        } catch (Exception e) {
-            Log.i(TAG, "Exception in textToBitmap: " + e.getMessage());
-            AppCommon.WriteInFile(mContext, TAG + "Exception in textToBitmap: " + e.getMessage());
-        }
-        return image;
-    }
-
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int height) {
-        float ratio = Math.min(
-                (float) newWidth / bm.getWidth(),
-                (float) height / bm.getHeight());
-        int width = Math.round((float) ratio * bm.getWidth());
-
-        return Bitmap.createScaledBitmap(bm, width, height, false);
-    }
-
-    //region Method 1
-    public void PrintLabels(String textToPrint) {
-
-        try {
-
-
-            //  String selectedPaperSize = "W12";
-
-
-//            myPrinter = new Printer();
-//            myPrinter.setBluetooth(BluetoothAdapter.getDefaultAdapter());
-//
-//            printerInfo = myPrinter.getPrinterInfo();
-//            printerInfo.printerModel = PrinterInfo.Model.PT_P300BT;
-//            printerInfo.port = PrinterInfo.Port.BLUETOOTH;
-//            printerInfo.paperSize = PrinterInfo.PaperSize.CUSTOM;
-//            printerInfo.orientation = PrinterInfo.Orientation.LANDSCAPE;
-//            printerInfo.align = PrinterInfo.Align.LEFT;
-//            printerInfo.printMode = PrinterInfo.PrintMode.FIT_TO_PAGE;
-//            printerInfo.numberOfCopies = 1;
-//            printerInfo.printQuality = PrinterInfo.PrintQuality.HIGH_RESOLUTION;
-//            printerInfo.macAddress = printerMacAddress;
-//            printerInfo.workPath = getApplicationContext().getCacheDir().getPath(); //String.valueOf(getApplicationContext().getExternalFilesDir("PrintMaterial"));
-//            //printerInfo.trimTapeAfterData = true;
-//            printerInfo.margin.left = 0;
-//            printerInfo.margin.top = 0;
-//
-//            printerInfo.labelNameIndex = LabelInfo.PT3.valueOf(selectedPaperSize).ordinal();
-//            printerInfo.labelMargin = 0;
-//            printerInfo.isAutoCut = false;
-//            printerInfo.isCutAtEnd = true;
-//            printerInfo.isHalfCut = false;
-//            printerInfo.isSpecialTape = false;
-//            printerInfo.isCutMark = true;
-//
-//            myPrinter.setPrinterInfo(printerInfo);
-
-            ImageToPrint = textToBitmap(textToPrint, 50, Color.BLACK);
-            //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
-            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 2, ImageToPrint.getHeight());
-            bitmapToFile(mContext, ImageToPrint, textToPrint +".png");
-
-            // print2();
-        } catch (Exception e) {
-            e.printStackTrace();
-            AppCommon.WriteInFile(mContext, TAG + "Exception in PrintLabels: " + e.getMessage());
-        }
-    }
-
-    public static File bitmapToFile(Context context, Bitmap bitmap, String fileNameToSave) {
-        //create a file to write bitmap data
-        File file = null;
-        try {
-            file = new File(context.getExternalFilesDir("PrintMaterial") + "/" + fileNameToSave);
-            file.createNewFile();
-
-            //Convert bitmap to byte array
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos);
-            byte[] bitmapdata = bos.toByteArray();
-
-            //write the bytes in file
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(bitmapdata);
-            fos.flush();
-            fos.close();
-            return file;
-        } catch (Exception e) {
-            e.printStackTrace();
-            AppCommon.WriteInFile(context, TAG + "Exception in bitmapToFile: " + e.getMessage());
-            return file; // it will return null
-        }
-    }
-
 
     @Override
     public HistoryRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -171,7 +56,6 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
     @Override
     public void onBindViewHolder(HistoryRecyclerViewAdapter.ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
-
 
         holder.batchid.setText("BatchID: "+ListOfHistory.get(position).get("BatchId"));
         holder.date_time.setText(ListOfHistory.get(position).get("TestDateTime"));
@@ -193,21 +77,14 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
         holder.btn_print3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                PrintLabels(ListOfHistory.get(position).get("LinkNameFromAPP"));
-//                Toast.makeText(mContext, "Image saved", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(mContext, ScanDeviceActivity.class);
-                mContext.startActivity(i);
-
                 AppCommon.IsPrint = true;
                 String LinkNameFromAPP = ListOfHistory.get(position).get("LinkNameFromAPP");
                 AppCommon.LinkNameToPrint = LinkNameFromAPP;
-                PrintLabels(LinkNameFromAPP);
+                Intent i = new Intent(mContext, ScanDeviceActivity.class);
+                mContext.startActivity(i);
             }
         });
-
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -232,17 +109,6 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
             parentLayout = itemView.findViewById(R.id.parent_layout);
             btn_print3 = itemView.findViewById(R.id.btnPrint3);
 
-
-
-
-
-//            btn_print3.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    PrintLabels("LinkNameFromAPP"+".png");
-//                    Toast.makeText(mContext, "Image saved", Toast.LENGTH_SHORT).show();
-//                }
-//            });
         }
     }
 

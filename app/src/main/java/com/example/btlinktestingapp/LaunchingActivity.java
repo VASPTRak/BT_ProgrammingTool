@@ -116,7 +116,7 @@ public class LaunchingActivity extends AppCompatActivity {
             }
         });
 
-        btnPrint.setOnClickListener(new View.OnClickListener() {
+        /*btnPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AppCommon.IsPrint = true;
@@ -124,11 +124,8 @@ public class LaunchingActivity extends AppCompatActivity {
                 //i.putExtra("DeviceName", "PT-P300BT4197"); //PT-P300BT4197
                 //i.putExtra("DeviceMac", "EC:79:49:29:37:75"); //EC:79:49:29:37:75
                 LaunchingActivity.this.startActivity(i);
-               // CheckIfPresentInPairedDeviceList("EC:79:49:29:2D:F8");
-
-
             }
-        });
+        });*/
 
         btn_history.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,7 +196,6 @@ public class LaunchingActivity extends AppCompatActivity {
         }
 
         IsAppfirstTimeUse();
-
 
     }
 

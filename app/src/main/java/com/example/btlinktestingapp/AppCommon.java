@@ -30,6 +30,7 @@ public class AppCommon {
     public static String FOLDER_BIN = "FSBin";
     public static boolean IsNewBTFirmware = false;
     public static boolean IsPrint = true;
+    //public static boolean IsPrintFromHistory = true;
     public static String printerMacAddress = "";
     public static String LinkNameToPrint = "";
 

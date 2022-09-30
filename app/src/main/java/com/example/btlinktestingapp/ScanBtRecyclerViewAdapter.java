@@ -73,7 +73,6 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
             @Override
             public void onClick(View view) {
 
-
                 if (NearByBTDevices.contains(mBTMac.get(position))){
                     Log.d(TAG, "DEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position));
                     //Toast.makeText(mContext, "DEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position), Toast.LENGTH_SHORT).show();
@@ -83,8 +82,6 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
                     i.putExtra("DeviceName", mBTNames.get(position));
                     i.putExtra("DeviceMac", mBTMac.get(position));
                     mContext.startService(i);*/
-
-
 
                     //open next activity
                     Intent intent = null;
@@ -96,7 +93,6 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
                         } else {
                             intent = new Intent(mContext, PulsarTestActivity.class);
                         }
-
                     }
 
                     intent.putExtra("DeviceName", mBTNames.get(position));
