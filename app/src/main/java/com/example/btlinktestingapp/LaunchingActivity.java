@@ -5,35 +5,34 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RadioGroup;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LaunchingActivity extends AppCompatActivity {
 
@@ -47,6 +46,12 @@ public class LaunchingActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE_CORSE_LOCATION = 4;
     public static final String PREFS_ISFIRSTTIME_USE = "AppFirstTimeUse";
     private CheckBox chk_changelinkname, chk_astlink;
+    TextView tvSelectLink;
+    ArrayList<HashMap<String, String>> linkList = new ArrayList<>();
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,20 @@ public class LaunchingActivity extends AppCompatActivity {
         chk_changelinkname = (CheckBox) findViewById(R.id.chk_changelinkname);
         chk_astlink = (CheckBox) findViewById(R.id.chk_astlink);
         Button btnPrint = (Button) findViewById(R.id.btnPrint);
+        tvSelectLink = (TextView) findViewById(R.id.tvSelectlinkname);
+        ListView lvLinknames = (ListView) findViewById(R.id.lvlinknames);
+        String[] links = getResources().getStringArray(R.array.links);
+
+        for (int i=0;i<links.length;i++){
+            HashMap<String, String> map = new HashMap<>();
+            map.put("item", links[i]);
+            linkList.add(map);
+
+        }
+
+
+
+
 
 
         tv_appversion.setText("Version:" + AppCommon.getVersionCode(LaunchingActivity.this));
@@ -75,6 +94,18 @@ public class LaunchingActivity extends AppCompatActivity {
 
         //Show the ad_hoc toast
         //show_ad_hoc_toast(ad_hoc_toast_textview, text);
+        if (tvSelectLink.isPressed()){
+            alertSelectLinkList();
+        }
+        else
+        {
+            System.out.println("No links");
+        }
+
+
+
+
+
 
         btn_go.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +174,6 @@ public class LaunchingActivity extends AppCompatActivity {
 
             }
         });
-
 
         try {
             checkPermissionTask checkPermissionTask = new checkPermissionTask();
@@ -380,4 +410,80 @@ public class LaunchingActivity extends AppCompatActivity {
             chk_changelinkname.setChecked(false);
         }
     }
+
+    public void selectLinkAction(View v) {
+        alertSelectLinkList();
+
+    }
+
+
+
+
+    public void alertSelectLinkList() {
+
+
+        final Dialog dialog = new Dialog(LaunchingActivity.this);
+        dialog.setTitle("BT Links");
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.link_list);
+
+        TextView tvNoLinks = (TextView) dialog.findViewById(R.id.tvnolinks);
+        ListView lvlinkNames = (ListView) dialog.findViewById(R.id.lvlinknames);
+        Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+
+
+        if (tvSelectLink.isPressed() ) {
+            lvlinkNames.setVisibility(View.VISIBLE);
+
+
+        } else {
+            lvlinkNames.setVisibility(View.GONE);
+            tvNoLinks.setVisibility(View.VISIBLE);
+        }
+
+
+        SimpleAdapter adapter = new SimpleAdapter(this,linkList , R.layout.item_link, new String[]{"item"}, new int[]{R.id.tvSingleItem});
+        lvlinkNames.setAdapter(adapter);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        lvlinkNames.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //SelectedItemPos = position;
+
+                //selectLinkByPosition();
+
+                String selectedValue =  linkList.get(position).get("item");
+
+                Intent intent = new Intent(LaunchingActivity.this, link_selected.class);;
+                intent.putExtra("LinkType",selectedValue);
+                startActivity(intent);
+
+
+
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    public void selectLinkByPosition() {
+        String[] selectLink = getResources().getStringArray(R.array.links);
+                tvSelectLink.setText(selectLink.length);
+
+
+        }
+
+
+
 }

@@ -12,11 +12,16 @@
         <entry key="..\:/Android Workspace/BT_ProgrammingTool/app/src/main/res/layout/layout_history_itemlist.xml" value="0.25416666666666665" />
         <entry key="..\:/Android Workspace/BT_ProgrammingTool/app/src/main/res/layout/layout_scanbt_listitem.xml" value="0.25416666666666665" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_ast_pulsar_test.xml" value="0.25416666666666665" />
+        <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_fsbt_selected.xml" value="0.2526041666666667" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_history.xml" value="0.25416666666666665" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_label_printing.xml" value="0.25416666666666665" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_launching.xml" value="0.25416666666666665" />
+        <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_link_selected.xml" value="0.25052083333333336" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/activity_pulsar_test.xml" value="0.25416666666666665" />
+        <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/item_hose.xml" value="0.2526041666666667" />
+        <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/item_link.xml" value="0.2526041666666667" />
+        <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/item_single.xml" value="0.2526041666666667" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/layout_history_itemlist.xml" value="0.2" />
         <entry key="..\:/BT_ProgrammingTool/app/src/main/res/layout/link_list.xml" value="0.253125" />
       </map>

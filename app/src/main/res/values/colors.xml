@@ -13,4 +13,5 @@
     <color name="backbtn">#D6EAF8</color>
     <color name="backgroundSelectedItem">#E1F2FE</color>
     <color name="yellow">#E79104</color>
+    <color name="colorPrimary">#0A62AA</color>
 </resources>

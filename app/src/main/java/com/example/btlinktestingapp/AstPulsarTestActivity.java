@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.brother.ptouch.sdk.Printer;
 import com.brother.ptouch.sdk.PrinterInfo;
@@ -121,13 +122,14 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
     public Bitmap textToBitmap(String text, float textSize, int textColor) {
         Bitmap image = null;
         try {
-            text = text + " : " + text + " : " + text;
+            text = text + "  "; //+ text + " : " + text;
 
             Paint paint = new Paint();
-            paint.setTextSize(textSize);
+            paint.setTextSize(50);
             paint.setColor(Color.WHITE); // Color.parseColor("#FAF9F6")); //#FAF9F6
             paint.setTextAlign(Paint.Align.LEFT);
             //paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            paint.setTypeface(ResourcesCompat.getFont(this, R.font.kailasa2));
             float baseline = -paint.ascent();
             int width = (int) (paint.measureText(text + "   ") + 0.5f);
             int height = (int) (baseline + paint.ascent() + 0.5f);
@@ -191,9 +193,9 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 //
 //            myPrinter.setPrinterInfo(printerInfo);
 
-            ImageToPrint = textToBitmap(textToPrint, 90, Color.BLACK);
+            ImageToPrint = textToBitmap(textToPrint, 50, Color.BLACK);
             //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
-            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 3, ImageToPrint.getHeight());
+            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 2, ImageToPrint.getHeight());
             bitmapToFile(AstPulsarTestActivity.this, ImageToPrint, mDeviceName+".png");
 
             // print2();

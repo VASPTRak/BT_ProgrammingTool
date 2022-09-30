@@ -9,5 +9,30 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="Hoseoutoforder">Hose out of order.</string>
+
     <string name="PrinterNotInPairList">The printer you have selected is not currently paired. We are advancing to the BlueTooth Settings page. Once you see the printer name which you are attempting to select, select it on the next page and then click pair. If you do not see this printer in the next page, reset power and try again.</string>
+    <string-array name="links">
+        <item>FS</item>
+        <item>FSBT</item>
+        <item>FSAF3</item>
+        <item>FSAF7</item>
+        <item>FSAG2</item>
+        <item>FSAG3</item>
+        <item>FSFV</item>
+        <item>FSFH3</item>
+        <item>FSFH7</item>
+        <item>FSGH2</item>
+        <item>FSGH3</item>
+    </string-array>
+
+    <string-array name="Tests">
+        <item>Test 1</item>
+        <item>Test 2</item>
+        <item>Test 3</item>
+        <item>Test 4</item>
+        <item>Test 5</item>
+        <item>Test 6</item>
+        <item>Test 7</item>
+    </string-array>
 </resources>

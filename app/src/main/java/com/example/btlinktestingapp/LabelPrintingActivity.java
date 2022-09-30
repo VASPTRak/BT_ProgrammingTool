@@ -1,6 +1,7 @@
 package com.example.btlinktestingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +34,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -116,6 +118,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
         tvPrinterMAC.setText("MAC Address: " + printerMacAddress);
         etLabelToPrint.setText(AppCommon.LinkNameToPrint);
 
+
         // Save printer info
         SharedPreferences sharedPref = LabelPrintingActivity.this.getSharedPreferences("PrinterInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -136,6 +139,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
         btnPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String textToPrint = etLabelToPrint.getText().toString();
                 if (textToPrint.trim().isEmpty()) {
                     Toast.makeText(LabelPrintingActivity.this, "Please enter any label to preview", Toast.LENGTH_LONG).show();
@@ -233,8 +237,8 @@ public class LabelPrintingActivity extends AppCompatActivity {
         try {
             ImageView ivPreview = (ImageView) findViewById(R.id.iv_Preview);
 
-            Bitmap img = textToBitmap(textToPrint, 80, Color.BLACK);
-            img = getResizedBitmap(img, img.getWidth() / 3, img.getHeight());
+            Bitmap img = textToBitmap(textToPrint, 50, Color.BLACK);
+            img = getResizedBitmap(img, img.getWidth() / 2, img.getHeight());
 
             ivPreview.setImageBitmap(img);
 
@@ -247,13 +251,14 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public Bitmap textToBitmap(String text, float textSize, int textColor) {
         Bitmap image = null;
         try {
-            text = text + " : " + text + " : " + text;
+            text = text + "  "; //+ text + " : " + text;
 
             Paint paint = new Paint();
-            paint.setTextSize(textSize);
+            paint.setTextSize(50);
             paint.setColor(Color.WHITE); // Color.parseColor("#FAF9F6")); //#FAF9F6
             paint.setTextAlign(Paint.Align.LEFT);
-            //paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            //paint.setTypeface(Typeface.DEFAULT);
+            paint.setTypeface(ResourcesCompat.getFont(this, R.font.kailasa2));
             float baseline = -paint.ascent();
             int width = (int) (paint.measureText(text + "   ") + 0.5f);
             int height = (int) (baseline + paint.ascent() + 0.5f);
@@ -333,13 +338,13 @@ public class LabelPrintingActivity extends AppCompatActivity {
             printerInfo.isCutAtEnd = true;
             printerInfo.isHalfCut = false;
             printerInfo.isSpecialTape = false;
-            printerInfo.isCutMark = true;
+            printerInfo.isCutMark = false;
 
             myPrinter.setPrinterInfo(printerInfo);
 
-            ImageToPrint = textToBitmap(textToPrint, 90, Color.BLACK);
+            ImageToPrint = textToBitmap(textToPrint, 50, Color.BLACK);
             //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
-            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 3, ImageToPrint.getHeight());
+            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 2, ImageToPrint.getHeight());
             //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1_new.png");
 
             print2();
