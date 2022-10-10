@@ -15,14 +15,15 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="7sp"
+            android:background="@color/colorPrimary"
             android:text="Select"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/black" />
+            android:textColor="#fff" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/black" />
+            android:background="#ddd" />
 
         <TextView
             android:id="@+id/tvnolinks"
@@ -39,22 +40,21 @@
 
         <ListView
             android:id="@+id/lvlinknames"
-            android:entries="@array/links"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:visibility="visible" />
+            android:entries="@array/links"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/black"
             android:textAllCaps="false"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:background="@color/backbtn"
+            android:backgroundTint="#DAE3EA"
             android:text="Cancel" />
 
     </LinearLayout>

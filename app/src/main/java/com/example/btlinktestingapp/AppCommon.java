@@ -31,6 +31,7 @@ public class AppCommon {
     public static boolean IsNewBTFirmware = false;
     public static boolean IsPrint = true;
     //public static boolean IsPrintFromHistory = true;
+    public static int FSBT_linkQtyToTest = 1;
     public static String printerMacAddress = "";
     public static String LinkNameToPrint = "";
 

@@ -83,7 +83,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
     public static Bitmap ImageToPrint;
 
     //btn_pass_test, btn_pass_testb,
-    Button btn_conn_status,  btn_fail_test,  btn_fail_testb, btn_set_no, btn_finish, btn_save_batchid,btn_go_to_top,btn_go_to_bottom, btn_print3;
+    Button btn_conn_status,  btn_fail_test,  btn_fail_testb, btn_set_no, btn_finish,btn_continue, btn_save_batchid,btn_go_to_top,btn_go_to_bottom, btn_print3;
     EditText edt_set_no, edt_batch_number;
     ConstraintLayout layout_toptest, layout_bottomtest,layout_prepare_toptest,layout_prepare_bottomtest;
     String batchID = "", TopTestResult = "F", BottomTestResult = "F", TestResult = "Incomplete";
@@ -109,6 +109,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         btn_fail_testb = (Button) findViewById(R.id.btn_fail_testb);
         btn_set_no = (Button) findViewById(R.id.btn_set_no);
         btn_finish = (Button) findViewById(R.id.btn_finish);
+        btn_continue = (Button) findViewById(R.id.btn_continue);
         btn_save_batchid = (Button) findViewById(R.id.btn_save_batchid);
         btn_go_to_top = (Button) findViewById(R.id.btn_go_to_top);
         btn_go_to_bottom = (Button) findViewById(R.id.btn_go_to_bottom);
@@ -124,6 +125,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         btn_fail_testb.setOnClickListener(this);
         btn_set_no.setOnClickListener(this);
         btn_finish.setOnClickListener(this);
+        btn_continue.setOnClickListener(this);
         btn_print3.setOnClickListener(this);
         btn_save_batchid.setOnClickListener(this);
         btn_go_to_top.setOnClickListener(this);
@@ -380,6 +382,12 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 break;
+
+            case R.id.btn_continue:
+                Intent intent = new Intent(PulsarTestActivity.this, ScanDeviceActivity.class);
+                startActivity(intent);
+                break;
+
             case R.id.btn_go_to_top:
 
                 CurrentTest = 1;
@@ -646,8 +654,17 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+
+
+                if (AppCommon.FSBT_linkQtyToTest == 0){
+                    btn_finish.setVisibility(View.VISIBLE);
+                    btn_continue.setVisibility(View.GONE);
+                }
+                else{
+                    btn_continue.setVisibility(View.VISIBLE);
+
+                }
                 btn_print3.setVisibility(View.VISIBLE);
-                btn_finish.setVisibility(View.VISIBLE);
 
             }
         }, 2000);
@@ -881,8 +898,19 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
         @Override
         protected void onPostExecute(String result) {
+            AppCommon.FSBT_linkQtyToTest = AppCommon.FSBT_linkQtyToTest -1;
+            if (AppCommon.FSBT_linkQtyToTest == 0){
 
-            btn_finish.setVisibility(View.VISIBLE);
+                btn_finish.setVisibility(View.VISIBLE);
+                btn_continue.setVisibility(View.GONE);
+
+            }
+            else{
+                btn_continue.setVisibility(View.VISIBLE);
+
+
+
+            }
             btn_print3.setVisibility(View.VISIBLE);
             if (result != null && !result.isEmpty()) {
 

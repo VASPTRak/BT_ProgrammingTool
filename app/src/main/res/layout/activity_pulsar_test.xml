@@ -43,6 +43,7 @@
         android:textSize="@dimen/NormalButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edt_batch_number"
         app:layout_constraintVertical_bias="0.05" />
@@ -84,28 +85,28 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.219" />
 
-<!--        <Button-->
-<!--            android:id="@+id/btn_pass_test"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="PASS test"-->
-<!--            android:textSize="@dimen/NormalButton"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:backgroundTint="@color/green"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.461" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_pass_test"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="PASS test"-->
+        <!--            android:textSize="@dimen/NormalButton"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            android:backgroundTint="@color/green"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.461" />-->
 
         <Button
             android:id="@+id/btn_fail_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fail test"
-            android:textSize="@dimen/NormalButton"
-            android:textColor="@color/white"
             android:backgroundTint="@color/red"
+            android:text="Fail test"
+            android:textColor="@color/white"
+            android:textSize="@dimen/NormalButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -296,10 +297,10 @@
 
 
     <Button
-        android:id="@+id/btnPrint3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Print"
+        android:id="@+id/btn_finish"
+        android:layout_width="236dp"
+        android:layout_height="70dp"
+        android:text="finish"
         android:textSize="@dimen/NormalButton"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -310,18 +311,32 @@
         app:layout_constraintVertical_bias="0.465" />
 
     <Button
-        android:id="@+id/btn_finish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="finish"
+        android:id="@+id/btnPrint3"
+        android:layout_width="240dp"
+        android:layout_height="70dp"
+        android:text="print"
         android:textSize="@dimen/NormalButton"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.607" />
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="247dp"
+        android:layout_height="70dp"
+        android:text="Continue"
+        android:textSize="@dimen/NormalButton"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPrint3"
+        app:layout_constraintVertical_bias="0.117" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
