@@ -25,10 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:textSize="@dimen/NormalButton"
         android:ems="10"
         android:hint=" Enter Batch ID"
         android:textAlignment="center"
+        android:textSize="@dimen/NormalButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,28 +153,28 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.219" />
 
-<!--        <Button-->
-<!--            android:id="@+id/btn_pass_testb"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="PASS test"-->
-<!--            android:textSize="@dimen/NormalButton"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:backgroundTint="@color/green"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.461" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_pass_testb"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="PASS test"-->
+        <!--            android:textSize="@dimen/NormalButton"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            android:backgroundTint="@color/green"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.461" />-->
 
         <Button
             android:id="@+id/btn_fail_testb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fail test"
-            android:textSize="@dimen/NormalButton"
-            android:textColor="@color/white"
             android:backgroundTint="@color/red"
+            android:text="Fail test"
+            android:textColor="@color/white"
+            android:textSize="@dimen/NormalButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -268,12 +268,12 @@
         android:id="@+id/edt_set_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         android:ems="10"
-        android:textSize="@dimen/NormalButton"
         android:enabled="false"
-        android:visibility="gone"
         android:inputType="textPersonName"
+        android:textAlignment="center"
+        android:textSize="@dimen/NormalButton"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -284,10 +284,10 @@
         android:id="@+id/btn_set_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginBottom="244dp"
         android:text="Set serial number"
         android:textSize="@dimen/NormalButton"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -305,7 +305,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.465" />
@@ -319,21 +319,21 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.525"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.607" />
 
     <Button
         android:id="@+id/btn_continue"
-        android:layout_width="247dp"
+        android:layout_width="wrap_content"
         android:layout_height="70dp"
         android:text="Continue"
         android:textSize="@dimen/NormalButton"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnPrint3"
         app:layout_constraintVertical_bias="0.117" />

@@ -9,19 +9,20 @@
 
     <EditText
         android:id="@+id/edt_enter_quantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:hint=" Enter Quantity"
         android:inputType="number"
         android:textAlignment="center"
         android:textSize="@dimen/NormalButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.197" />
+        app:layout_constraintVertical_bias="0.196" />
 
     <Button
         android:id="@+id/btn_test"
@@ -40,6 +41,8 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:background="@color/purple_500"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -52,8 +55,8 @@
             android:id="@+id/linearHose"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:onClick="selectTestAction"
             android:gravity="center"
+            android:onClick="selectTestAction"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -84,7 +87,6 @@
 
         </LinearLayout>
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
