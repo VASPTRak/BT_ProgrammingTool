@@ -708,6 +708,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
             } else {
                 Toast.makeText(this, "Please wait. Connecting..", Toast.LENGTH_LONG).show();
+                System.out.println("QR status" +QR_ReaderStatus);
             }
 
         } else {

@@ -6,7 +6,7 @@
     <item android:id="@+id/mreload"
         android:orderInCategory="104"
         android:icon="@drawable/reload"
-        android:title="Camera"
+        android:title="Reload"
         app:showAsAction="always"/>
 
 

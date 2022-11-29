@@ -38,7 +38,7 @@ public class LaunchingActivity extends AppCompatActivity {
 
 
     private static final String TAG = LaunchingActivity.class.getSimpleName();
-    public static String webIP = "http://sierravistatest.cloudapp.net";
+    public static String webIP = "http://fluidsecuretest.eastus.cloudapp.azure.com/";
     public static String API = webIP + "/api/External/getuniquehardwaretestlinkname";
     public static String API_GETHISTORY = webIP + "/api/External/gethardwaretestdetails";
     public static String API_UNIQUE_ID = webIP + "/api/External/checkbatchidunqiue";
@@ -113,6 +113,7 @@ public class LaunchingActivity extends AppCompatActivity {
                 AppCommon.IsPrint = false;
                 Intent i = new Intent(LaunchingActivity.this, ScanDeviceActivity.class);//ScanDeviceActivity
                 LaunchingActivity.this.startActivity(i);
+                //AppCommon.WriteInFile(LaunchingActivity.this, TAG + " Go button clicked ");
             }
         });
 
@@ -247,7 +248,7 @@ public class LaunchingActivity extends AppCompatActivity {
         boolean isValue = false;
 
         try {
-            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
             boolean isGranted = false;
             for (String per : permissions) {

@@ -141,6 +141,23 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        Toast.makeText(this, "Connecting to the LINK\nPlease wait several seconds..", Toast.LENGTH_SHORT).show();
+        AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Connecting to the LINK\nPlease wait several seconds..");
+        btn_save_batchid.setEnabled(false);
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if (!btn_save_batchid.isEnabled()){
+                    Toast.makeText(mBluetoothLeService, "Unable to connect link...Please try again", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Unable to connect link...Please try again");
+                }
+
+            }
+        }, 10000);
+
 
     }
 
@@ -208,6 +225,9 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            btn_save_batchid.setEnabled(true);
+            //System.out.println("Save button enabled");
+            AppCommon.WriteInFile(PulsarTestActivity.this, TAG + "Save button enabled");
             final String action = intent.getAction();
             if (BTLinkLeServiceCode.ACTION_GATT_CONNECTED.equals(action)) {
 
@@ -801,6 +821,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
             } else {
                 Toast.makeText(this, "Please wait. Connecting..", Toast.LENGTH_LONG).show();
+                System.out.println("QR status" +QR_ReaderStatus);
             }
 
         } else {

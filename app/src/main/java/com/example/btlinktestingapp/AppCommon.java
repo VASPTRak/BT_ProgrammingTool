@@ -144,14 +144,14 @@ public class AppCommon {
 
             System.out.println(str);
 
-            //File file = new File(Environment.getExternalStorageDirectory() + "/BTProgrammingTool");
-            File file = new File(String.valueOf(ctx.getExternalFilesDir("BTProgrammingTool")));
+            File file = new File(Environment.getExternalStorageDirectory() + "/BTProgrammingTool");
+            //File file = new File(String.valueOf(ctx.getExternalFilesDir("BTProgrammingTool")));
 
             if (!file.exists()) {
                 if (file.mkdirs()) {
                     //System.out.println("Create FSLog Folder");
                 } else {
-                    // System.out.println("Fail to create KavachLog folder");
+                     //System.out.println("Fail to create KavachLog folder");
                 }
             }
 
@@ -170,8 +170,9 @@ public class AppCommon {
             bufferWritter.write("\n" + UseDate + "--" + str + " ");
             bufferWritter.close();
 
-        } catch (IOException e) {
-            WriteInFile(ctx, "WriteInFile Exception" + e);
+        }  catch (Exception e) {
+            //WriteInFile(ctx, "WriteInFile Exception" + e);
+            Log.e("AppCommon","WriteInFile Exception" + e);
         }
     }
 
