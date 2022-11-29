@@ -113,6 +113,21 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
+        Toast.makeText(this, "Connecting to the LINK\nPlease wait several seconds...", Toast.LENGTH_SHORT).show();
+        AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Connecting to the LINK (" + mDeviceName + "). Please wait several seconds...");
+        btn_save_batchid.setEnabled(false);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if (!btn_save_batchid.isEnabled()){
+                    Toast.makeText(mBluetoothLeService, "Unable to connect to the LINK... Please try again", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Unable to connect to the LINK... Please try again");
+                }
+
+            }
+        }, 10000);
     }
 
     @Override
@@ -177,6 +192,10 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (!btn_save_batchid.isEnabled()) {
+                btn_save_batchid.setEnabled(true);
+                AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Save_batchId button enabled");
+            }
             final String action = intent.getAction();
             if (BTLinkLeServiceCode.ACTION_GATT_CONNECTED.equals(action)) {
 
@@ -246,6 +265,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
                     } else {
                         Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                        AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Please check network connection");
                     }
                 }
 
@@ -285,6 +305,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
                 } else {
                     Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Please check network connection");
                 }
                 break;
 
@@ -305,6 +326,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
                     } else {
                         Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                        AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Please check network connection");
                     }
 
                 } else {
@@ -708,7 +730,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
 
             } else {
                 Toast.makeText(this, "Please wait. Connecting..", Toast.LENGTH_LONG).show();
-                System.out.println("QR status" +QR_ReaderStatus);
+                AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Status: " + QR_ReaderStatus);
             }
 
         } else {
@@ -859,6 +881,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                 }
             } else {
                 Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Please check network connection");
             }
         } catch (Exception e) {
             AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Exception in test_pass_top: " + e.getMessage());
@@ -877,6 +900,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                     //btn_pass_test.performClick();
                     test_pass_top();
                     Toast.makeText(getApplicationContext(), "Top test pass", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(AstPulsarTestActivity.this, TAG + " Top test pass");
                 }
             }
         } catch (Exception e) {

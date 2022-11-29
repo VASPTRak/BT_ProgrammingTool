@@ -141,23 +141,21 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        Toast.makeText(this, "Connecting to the LINK\nPlease wait several seconds..", Toast.LENGTH_SHORT).show();
-        AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Connecting to the LINK\nPlease wait several seconds..");
+        Toast.makeText(this, "Connecting to the LINK\nPlease wait several seconds...", Toast.LENGTH_SHORT).show();
+        AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Connecting to the LINK (" + mDeviceName + "). Please wait several seconds...");
         btn_save_batchid.setEnabled(false);
-
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 if (!btn_save_batchid.isEnabled()){
-                    Toast.makeText(mBluetoothLeService, "Unable to connect link...Please try again", Toast.LENGTH_LONG).show();
-                    AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Unable to connect link...Please try again");
+                    Toast.makeText(mBluetoothLeService, "Unable to connect to the LINK... Please try again", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Unable to connect to the LINK... Please try again");
                 }
 
             }
         }, 10000);
-
 
     }
 
@@ -225,9 +223,10 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            btn_save_batchid.setEnabled(true);
-            //System.out.println("Save button enabled");
-            AppCommon.WriteInFile(PulsarTestActivity.this, TAG + "Save button enabled");
+            if (!btn_save_batchid.isEnabled()) {
+                btn_save_batchid.setEnabled(true);
+                AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Save_batchId button enabled");
+            }
             final String action = intent.getAction();
             if (BTLinkLeServiceCode.ACTION_GATT_CONNECTED.equals(action)) {
 
@@ -299,6 +298,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
                     } else {
                         Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                        AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Please check network connection");
                     }
                 }
 
@@ -331,6 +331,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
                 } else {
                     Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Please check network connection");
                 }
                 break;
 
@@ -371,6 +372,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
                 } else {
                     Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Please check network connection");
                 }
                 break;
 
@@ -391,6 +393,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
                     } else {
                         Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                        AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Please check network connection");
                     }
 
                 } else {
@@ -821,7 +824,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
             } else {
                 Toast.makeText(this, "Please wait. Connecting..", Toast.LENGTH_LONG).show();
-                System.out.println("QR status" +QR_ReaderStatus);
+                AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Status: " + QR_ReaderStatus);
             }
 
         } else {
@@ -995,6 +998,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 }
             } else {
                 Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+                AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Please check network connection");
             }
         } catch (Exception e) {
             AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Exception in test_pass_bottom: " + e.getMessage());
@@ -1012,11 +1016,13 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                     previousQty = CurrentQty;
                     test_pass_top();
                     Toast.makeText(getApplicationContext(), "Top test pass", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Top test pass");
                     //btn_go_to_bottom.performClick();
                 } else if (CurrentTest == 2 && CurrentQty > 30 && previousQty == 0) {
                     previousQty = CurrentQty;
                     test_pass_bottom();
                     Toast.makeText(getApplicationContext(), "Bottom test pass", Toast.LENGTH_LONG).show();
+                    AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Bottom test pass");
                 }
             }
         } catch (Exception e) {

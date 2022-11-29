@@ -31,7 +31,7 @@
         <activity
             android:name=".HistoryActivity"
             android:configChanges="orientation"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".BTLinkLeServiceCode"
