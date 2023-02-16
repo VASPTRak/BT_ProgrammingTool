@@ -11,5 +11,8 @@ public class EntityClass {
     public String AssignUniqueLinkName;
     public String IsASTLink ;
 
+
     public String UniqueLinkName;
+    public String LINKHardwareTestCaseId ;
+    public String Pulses;
 }
