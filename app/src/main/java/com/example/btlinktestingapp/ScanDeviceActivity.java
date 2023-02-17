@@ -234,7 +234,7 @@ public class ScanDeviceActivity extends AppCompatActivity {
                 public void run() {
 
                     if (mImageUrls != null && mImageUrls.size() > 0) {
-                        String msg = "Please select “FSBT-Undertest”";
+                        String msg = "Please select “FSBT_Undertest”";
                         if (AppCommon.IsPrint) {
                             msg = "Please select printer";
                         }

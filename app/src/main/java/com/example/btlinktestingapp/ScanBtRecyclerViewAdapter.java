@@ -48,7 +48,7 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
 
         try{
 
-        if (mBTNames.get(position).equalsIgnoreCase("FSBT-Undertest")) {
+        if (mBTNames.get(position).equalsIgnoreCase("FSBT_Undertest")) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.parentLayout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E79104")));
