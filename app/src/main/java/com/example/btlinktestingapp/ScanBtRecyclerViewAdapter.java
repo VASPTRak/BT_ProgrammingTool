@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +28,7 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
     private ArrayList<String> mBTNames = new ArrayList<>();
     private ArrayList<String> mBTMac = new ArrayList<>();
     private Context mContext;
+    boolean isBTDeviceFound = false;
 
     public ScanBtRecyclerViewAdapter(Context context, ArrayList<String> BTNames, ArrayList<String> BTsMac) {
         mBTNames = BTNames;
@@ -41,6 +43,7 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
         return holder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
@@ -62,20 +65,29 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
 
         }
 
+            if (mBTNames.stream().anyMatch(element -> element.contains(AppCommon.selectedLinkType))) {
+            holder.BTName.setText(mBTNames.get(position));
+            holder.BT_mac.setText(mBTMac.get(position));
+            isBTDeviceFound = true;
+        }
+        else{
+               holder.parentLayout.setVisibility(View.GONE);
+        }
+
         }catch (Exception e){
             e.printStackTrace();
         }
 
 
-        holder.BTName.setText(mBTNames.get(position));
-        holder.BT_mac.setText(mBTMac.get(position));
+
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (NearByBTDevices.contains(mBTMac.get(position))){
-                    Log.d(TAG, "DEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position));
-                    //Toast.makeText(mContext, "DEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position), Toast.LENGTH_SHORT).show();
+                if(isBTDeviceFound) {
+                    if (NearByBTDevices.contains(mBTMac.get(position))) {
+                        Log.d(TAG, "DEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position));
+                        //Toast.makeText(mContext, "DEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position), Toast.LENGTH_SHORT).show();
 
                     /*//Start service..
                     Intent i = new Intent(mContext,LinkBlueService.class);
@@ -83,22 +95,25 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
                     i.putExtra("DeviceMac", mBTMac.get(position));
                     mContext.startService(i);*/
 
-                    //open next activity
-                    Intent intent = null;
-                    if (AppCommon.IsPrint) {
-                        intent = new Intent(mContext, LabelPrintingActivity.class);
-                    } else {
-                        if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y")) {
-                            intent = new Intent(mContext, AstPulsarTestActivity.class);
+                        //open next activity
+                        Intent intent = null;
+                        if (AppCommon.IsPrint) {
+                            intent = new Intent(mContext, LabelPrintingActivity.class);
                         } else {
-                            intent = new Intent(mContext, PulsarTestActivity.class);
+                            if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y") || mBTNames.stream().anyMatch(element -> element.startsWith("FSA"))) {
+                                intent = new Intent(mContext, AstPulsarTestActivity.class);
+                            } else {
+                                intent = new Intent(mContext, PulsarTestActivity.class);
+                            }
                         }
+
+                        isBTDeviceFound = false;
+
+                        intent.putExtra("DeviceName", mBTNames.get(position));
+                        intent.putExtra("DeviceMac", mBTMac.get(position));
+                        mContext.startActivity(intent);
+
                     }
-
-                    intent.putExtra("DeviceName", mBTNames.get(position));
-                    intent.putExtra("DeviceMac", mBTMac.get(position));
-                    mContext.startActivity(intent);
-
                 }else{
                     Log.d(TAG, "DEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position));
                     Toast.makeText(mContext, "Selected device is not active please check!!\nDEVICE NAME: " + mBTNames.get(position) + " \nDEVICE MAC: " + mBTMac.get(position), Toast.LENGTH_SHORT).show();

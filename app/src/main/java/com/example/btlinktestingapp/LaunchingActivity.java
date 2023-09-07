@@ -458,6 +458,7 @@ public class LaunchingActivity extends AppCompatActivity {
                 //selectLinkByPosition();
 
                 String selectedValue =  linkList.get(position).get("item");
+                AppCommon.selectedLinkType = selectedValue;
 
                 Intent intent = new Intent(LaunchingActivity.this, link_selected.class);;
                 intent.putExtra("LinkType",selectedValue);

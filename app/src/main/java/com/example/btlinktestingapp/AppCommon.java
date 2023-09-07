@@ -36,6 +36,11 @@ public class AppCommon {
     public static String LinkNameToPrint = "";
     public static String isbtnContinuePressed = "False";
     public static String TestCaseId = "";
+    public static String selectedLinkType = "";
+    public static String selectedBatchID = "";
+    public static String Pulses = "";
+
+
 
     public static void WriteInternalFile(LaunchingActivity launchingActivity, String data) {
 
