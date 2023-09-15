@@ -87,6 +87,8 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
     int time=0;
     TimerTask timerTask;
     ArrayList<HashMap<String, String>> batchIDList = new ArrayList<>();
+    int countBTDisconnect = 0;
+
 
 
 
@@ -191,20 +193,57 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                                     @Override
                                     public void run() {
                                         if (CurrentTest == 1) {
-                                            btn_restart_test.setVisibility(View.VISIBLE);
-                                            isRestartBtnVisible = true;
                                             //timerBT.cancel();
                                             time = 0;
-                                            countDownTimer();
+                                            if(btLinkResponse.equalsIgnoreCase("STATE_CONNECTED") || btLinkResponse.contains("enabled")) {
+                                                btn_restart_test.setVisibility(View.VISIBLE);
+                                                isRestartBtnVisible = true;
+                                                countDownTimer();
+                                            }
+                                            else{
+                                                try {
+                                                    unbindService(mServiceConnection);
+                                                    unregisterReceiver(mGattUpdateReceiver);
+                                                    Thread.sleep(2000);
+                                                    if(countBTDisconnect < 3) {
+                                                        Intent gattServiceIntent = new Intent(PulsarTestActivity.this, BTLinkLeServiceCode.class);
+                                                        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+                                                        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+                                                        countBTDisconnect++;
+                                                    }
+                                                }catch (Exception e){
+                                                    
+                                                }
+                                            }
 
                                         }
                                         if (CurrentTest == 2) {
-                                            btn_restart_testb.setVisibility(View.VISIBLE);
-                                            isRestartBtnVisibleB = true;
                                             //timerBT.cancel();
                                             time = 0;
-                                            countDownTimer();
-                                        }
+                                            if(btLinkResponse.equalsIgnoreCase("STATE_CONNECTED") || btLinkResponse.contains("enabled")) {
+                                                btn_restart_testb.setVisibility(View.VISIBLE);
+                                                isRestartBtnVisibleB = true;
+                                                countDownTimer();
+                                            }
+                                            else {
+                                                try {
+                                                    unbindService(mServiceConnection);
+                                                    unregisterReceiver(mGattUpdateReceiver);
+                                                    Thread.sleep(2000);
+                                                    if(countBTDisconnect < 3) {
+                                                        Intent gattServiceIntent = new Intent(PulsarTestActivity.this, BTLinkLeServiceCode.class);
+                                                        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+                                                        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+                                                        countBTDisconnect++;
+                                                    }
+                                                }catch (Exception e){
+
+                                                }
+                                            }
+
+                                            }
                                     }
                                 });
 
@@ -247,6 +286,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void countDownTimer(){
+        countBTDisconnect = 0;
         new CountDownTimer(10000,1000){
 
             @Override
@@ -550,7 +590,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 btn_restart_testb.setVisibility(View.GONE);
                 isRestartBtnVisibleB=false;
                 isSameValueFor10Sec=false;
-                isRestartButtonClicked=true;
+                isRestartButtonClickedB=true;
                 RelayOffCommand();
                 tv_qty.setText("");
                 tv_qtyb.setText("");
@@ -1283,7 +1323,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 String[] resp = respStr.split(":");
                 CurrentQty = Integer.parseInt(resp[1].trim());
                 Log.i(TAG, "Current qty:" + CurrentQty);
-                if (CurrentTest == 1 && CurrentQty > 10  && finalQty == 0) {
+                if (CurrentTest == 1 && CurrentQty > inputValues  && finalQty == 0) {
                     //previousQty = CurrentQty;
                     finalQty = CurrentQty;
                     Pulses = String.valueOf(CurrentQty);

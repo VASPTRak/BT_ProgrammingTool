@@ -85,6 +85,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
     int time=0;
     ArrayList<HashMap<String, String>> batchIDList = new ArrayList<>();
     ListView lvlinkNames;
+    int countBTDisconnect = 0;
 
 
     @Override
@@ -191,11 +192,29 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                                 public void run() {
                                     if(CurrentTest==1) {
                                         btn_restart_test.setVisibility(View.VISIBLE);
-                                        isRestartBtnVisible=true;
                                         //timerBT.cancel();
                                         time=0;
-                                        countDownTimer();
+                                        if(btLinkResponse.equalsIgnoreCase("STATE_CONNECTED") || btLinkResponse.contains("enabled")) {
+                                            btn_restart_test.setVisibility(View.VISIBLE);
+                                            isRestartBtnVisible = true;
+                                            countDownTimer();
+                                        }
+                                        else{
+                                            try {
+                                                unbindService(mServiceConnection);
+                                                unregisterReceiver(mGattUpdateReceiver);
+                                                Thread.sleep(2000);
+                                                if(countBTDisconnect < 3) {
+                                                    Intent gattServiceIntent = new Intent(AstPulsarTestActivity.this, BTLinkLeServiceCode.class);
+                                                    bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
+                                                    registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+                                                    countBTDisconnect++;
+                                                }
+                                            }catch (Exception e){
+
+                                            }
+                                        }
                                     }
                                 }
                             });
@@ -238,6 +257,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
     }
 
     public void countDownTimer(){
+        countBTDisconnect = 0;
         new CountDownTimer(10000,1000){
 
             @Override

@@ -8,6 +8,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,9 +31,17 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class LaunchingActivity extends AppCompatActivity {
 
@@ -48,6 +57,9 @@ public class LaunchingActivity extends AppCompatActivity {
     private CheckBox chk_changelinkname, chk_astlink;
     TextView tvSelectLink;
     ArrayList<HashMap<String, String>> linkList = new ArrayList<>();
+    ArrayList<HashMap<String,String>> ListOfTestCases = new ArrayList<>();
+    String Pulses;
+
 
 
 
@@ -68,12 +80,13 @@ public class LaunchingActivity extends AppCompatActivity {
         ListView lvLinknames = (ListView) findViewById(R.id.lvlinknames);
         String[] links = getResources().getStringArray(R.array.links);
 
-        for (int i=0;i<links.length;i++){
-            HashMap<String, String> map = new HashMap<>();
-            map.put("item", links[i]);
-            linkList.add(map);
-
-        }
+//        for (int i=0;i<links.length;i++){
+//            HashMap<String, String> map = new HashMap<>();
+//            map.put("item", links[i]);
+//            //linkList.add(map);
+//
+//        }
+        new getTestCasesDetails().execute();
 
 
 
@@ -94,13 +107,13 @@ public class LaunchingActivity extends AppCompatActivity {
 
         //Show the ad_hoc toast
         //show_ad_hoc_toast(ad_hoc_toast_textview, text);
-        if (tvSelectLink.isPressed()){
-            alertSelectLinkList();
-        }
-        else
-        {
-            System.out.println("No links");
-        }
+//        if (tvSelectLink.isPressed()){
+//            alertSelectLinkList();
+//        }
+//        else
+//        {
+//            System.out.println("No links");
+//        }
 
 
 
@@ -286,7 +299,118 @@ public class LaunchingActivity extends AppCompatActivity {
 
         }
     }
+    public class getTestCasesDetails extends AsyncTask<String, Void, String> {
 
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            pd = new ProgressDialog(LaunchingActivity.this);
+            pd.setMessage("Please wait...");
+            pd.show();
+        }
+
+        protected String doInBackground(String... param) {
+            String resp = "";
+
+            try {
+
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url(link_selected.API_TEST_CASES)
+                        .get()
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                resp = response.body().string();
+                System.out.println("Response from API: "+resp );
+
+                //------------------------------
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                pd.cancel();
+            }
+
+            return resp;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            System.out.println("Response of API: " +result);
+
+            if (result != null && !result.isEmpty()) {
+
+                try {
+                    pd.cancel();
+                    JSONObject jsonObject = new JSONObject(result);
+
+                    String ResponceMessage = jsonObject.getString("ResponseMessage");
+                    String ResponseText = jsonObject.getString("ResponseText");
+
+                    if (ResponceMessage.equalsIgnoreCase("success")) {
+                        //ListOfHistoryData.clear();
+                        JSONArray jsonArray = jsonObject.getJSONArray("LINKHardwareTestCaseObj");
+
+                        for (int i=0; i< jsonArray.length(); i++){
+
+                            JSONObject jobj = jsonArray.getJSONObject(i);
+                            String TestcaseId = jobj.getString("LINKHardwareTestCaseId");
+                            String TestcaseName = jobj.getString("LINKHardwareTestCaseName");
+                            Pulses = jobj.getString("Pulses");
+
+
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("LINKHardwareTestCaseId", TestcaseId);
+                            map.put("LINKHardwareTestCaseName", TestcaseName);
+                            map.put("Pulses", Pulses);
+
+                            ListOfTestCases.add(map);
+
+                        }
+
+                        JSONArray jsonArrayLinkType = jsonObject.getJSONArray("LINKTypeWithTestCasesObj");
+
+                        for (int i=0; i< jsonArrayLinkType.length(); i++){
+
+                            JSONObject jobj = jsonArrayLinkType.getJSONObject(i);
+                            String linkTypeId = jobj.getString("LinkTypeId");
+                            String linkTypeName = jobj.getString("LinkTypeName");
+                            String linkHardwareTestCaseIds = jobj.getString("LinkHardwareTestCaseIds");
+//                            String UniqueLinkName = jobj.getString("UniqueLinkName");
+//                            String MacAddress = jobj.getString("MacAddress");
+
+
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("LinkTypeId", linkTypeId);
+                            map.put("LinkTypeName", linkTypeName);
+                            map.put("LinkHardwareTestCaseIds", linkHardwareTestCaseIds);
+
+                            linkList.add(map);
+
+                        }
+                        selectLinkAction(null);
+                        Log.i(TAG, "API Call Success" + result);
+
+                    } else {
+                        Log.i(TAG, "API Call fail" + result);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    pd.cancel();
+                }
+
+            } else {
+                pd.cancel();
+                Log.i(TAG, " InPost Response err:" + result);
+            }
+        }
+    }
     private void show_ad_hoc_toast(final TextView ad_hoc_toast_textview, String text) {
 
 
@@ -420,26 +544,24 @@ public class LaunchingActivity extends AppCompatActivity {
 
 
         final Dialog dialog = new Dialog(LaunchingActivity.this);
-        dialog.setTitle("BT Links");
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.link_list);
 
-        TextView tvNoLinks = (TextView) dialog.findViewById(R.id.tvnolinks);
         ListView lvlinkNames = (ListView) dialog.findViewById(R.id.lvlinknames);
         Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
 
 
-        if (tvSelectLink.isPressed() ) {
+        if (tvSelectLink.isPressed()) {
+            dialog.show();
             lvlinkNames.setVisibility(View.VISIBLE);
 
 
         } else {
             lvlinkNames.setVisibility(View.GONE);
-            tvNoLinks.setVisibility(View.VISIBLE);
         }
 
 
-        SimpleAdapter adapter = new SimpleAdapter(this,linkList , R.layout.item_link, new String[]{"item"}, new int[]{R.id.tvSingleItem});
+        SimpleAdapter adapter = new SimpleAdapter(this, linkList, R.layout.item_link, new String[]{"LinkTypeName"}, new int[]{R.id.tvSingleItem});
         lvlinkNames.setAdapter(adapter);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -457,31 +579,34 @@ public class LaunchingActivity extends AppCompatActivity {
 
                 //selectLinkByPosition();
 
-                String selectedValue =  linkList.get(position).get("item");
+                String selectedValue = linkList.get(position).get("LinkTypeName");
                 AppCommon.selectedLinkType = selectedValue;
 
-                Intent intent = new Intent(LaunchingActivity.this, link_selected.class);;
-                intent.putExtra("LinkType",selectedValue);
-                startActivity(intent);
+                try {
+                    HashMap<String, String> selectedHashMap = findHashMapByLinkTypeName(linkList, selectedValue);
+                    Intent intent = new Intent(LaunchingActivity.this, link_selected.class);
+                    intent.putExtra("LinkType", selectedValue);
+                    intent.putExtra("SelectedHashMap", selectedHashMap);
+                    intent.putExtra("ListOfTestCases", ListOfTestCases);
+                    startActivity(intent);
 
 
-
-
-                dialog.dismiss();
+                    dialog.dismiss();
+                } catch (Exception e) {
+                    System.out.println("Ex" + e.getMessage());
+                }
             }
         });
-
-        dialog.show();
     }
 
-
-    public void selectLinkByPosition() {
-        String[] selectLink = getResources().getStringArray(R.array.links);
-                tvSelectLink.setText(selectLink.length);
-
-
+    private HashMap<String, String> findHashMapByLinkTypeName(ArrayList<HashMap<String, String>> linkList, String linkTypeName) {
+        for (HashMap<String, String> item : linkList) {
+            if (linkTypeName.equals(item.get("LinkTypeName"))) {
+                return item;
+            }
         }
-
+        return null; // Return null if not found
+    }
 
 
 }

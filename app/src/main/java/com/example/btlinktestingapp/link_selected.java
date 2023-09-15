@@ -24,10 +24,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -48,6 +52,7 @@ public class link_selected extends AppCompatActivity {
 
     public static String API = webIP + "/api/External/getuniquehardwaretestlinkname";
     public static String API_TEST_CASES = webIP + "/api/External/getlinkhardwaretestcases";
+    String Tests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +60,11 @@ public class link_selected extends AppCompatActivity {
         setContentView(R.layout.activity_link_selected);
 
         etEnterQty = (EditText) findViewById(R.id.edt_enter_quantity);
-        String[] Tests = getResources().getStringArray(R.array.Tests);
         tvselectTest = (TextView) findViewById(R.id.tvSelectTest);
-        lvTestNames = (ListView) findViewById(R.id.lvlinknames);
-       // etEnterPulses=(EditText) findViewById(R.id.edit_enter_pulses);
+        lvTestNames = (ListView) findViewById(R.id.lvlinknames);// etEnterPulses=(EditText) findViewById(R.id.edit_enter_pulses);
         linearLayout =(LinearLayout) findViewById(R.id.linearLayout);
         //btnGo = (Button) findViewById(R.id.btnGO);
-        new getTestCasesDetails().execute();
+        //new getTestCasesDetails().execute();
 
 
 
@@ -76,21 +79,57 @@ public class link_selected extends AppCompatActivity {
 
         }
 
-
         Intent intent = getIntent();
         String LinkType = intent.getStringExtra("LinkType");
-        //etEnterQty.setText(LinkType);
+        try {
+            ListOfTestCases = (ArrayList<HashMap<String, String>>) getIntent().getSerializableExtra("ListOfTestCases");
+            HashMap<String, String> selectedHashMap = (HashMap<String, String>) getIntent().getSerializableExtra("SelectedHashMap");
+            if (selectedHashMap != null && !selectedHashMap.isEmpty()) {
+                Tests = selectedHashMap.get("LinkHardwareTestCaseIds");
+                System.out.println("Tests" + Tests);
+            } else {
+                // If selectedHashMap is empty, load TestsList from SharedPreferences
+                ArrayList<HashMap<String, String>> retrievedTestsList = loadTestsListFromSharedPreferences();
 
-
-
-        for (int i=0; i<Tests.length; i++){
-            HashMap<String, String> map = new HashMap<>();
-            map.put("item", Tests[i]);
-            TestsList.add(map);
-
+                TestsList.addAll(retrievedTestsList);
+            }
         }
+
+        catch (Exception e)
+        {System.out.println("Ex" +e.getMessage());}
+
+        if (Tests != null) {
+            String[] testCaseIdArray = Tests.split(",");
+
+            for (String testCaseId : testCaseIdArray) {
+                for (HashMap<String, String> testCase : ListOfTestCases) {
+                    String id = testCase.get("LINKHardwareTestCaseId");
+                    String name = testCase.get("LINKHardwareTestCaseName");
+                    String Pulses = testCase.get("Pulses");
+
+                    if (id != null && id.equals(testCaseId)) {
+                        HashMap<String, String> testHashMap = new HashMap<>();
+                        testHashMap.put("LINKHardwareTestCaseId", id);
+                        testHashMap.put("LINKHardwareTestCaseName", name);
+                        testHashMap.put("Pulses", Pulses);
+                        TestsList.add(testHashMap);
+                        break;
+                    }
+                }
+            }
+        }
+        saveTestsListToSharedPreferences(TestsList);
+
+
+
+//        for (int i=0; i<Tests.length; i++){
+//            HashMap<String, String> map = new HashMap<>();
+//            map.put("item", Tests[i]);
+//            TestsList.add(map);
+//
+//        }
         if (tvselectTest.isPressed()){
-            alertSelectLinkList();
+            alertSelectTestsList();
         }
         else
         {
@@ -100,20 +139,39 @@ public class link_selected extends AppCompatActivity {
 
     public void selectTestAction(View v) {
 
-        alertSelectLinkList();
+        alertSelectTestsList();
 
+    }
+
+    private ArrayList<HashMap<String, String>> loadTestsListFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String testsListJson = sharedPreferences.getString("TestsList", "");
+        if (!testsListJson.isEmpty()) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<HashMap<String, String>>>() {}.getType();
+            return gson.fromJson(testsListJson, type);
+        }
+        return new ArrayList<>();
+    }
+
+    private void saveTestsListToSharedPreferences(ArrayList<HashMap<String, String>> TestsList) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String testsListJson = gson.toJson(TestsList);
+        editor.putString("TestsList", testsListJson);
+        editor.apply();
     }
 
 
 
-    public void alertSelectLinkList() {
+    public void alertSelectTestsList() {
         final Dialog dialog = new Dialog(link_selected.this);
-        dialog.setTitle("BT Links");
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.link_list);
 
         TextView tvNoLinks = (TextView) dialog.findViewById(R.id.tvnolinks);
-         lvTestNames = (ListView) dialog.findViewById(R.id.lvlinknames);
+        lvTestNames = (ListView) dialog.findViewById(R.id.lvlinknames);
         Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
 
         ArrayList<Integer> values = new ArrayList<Integer>();
@@ -133,7 +191,7 @@ public class link_selected extends AppCompatActivity {
         }
 
 
-        SimpleAdapter adapter = new SimpleAdapter(this,ListOfTestCases , R.layout.item_link, new String[]{"LINKHardwareTestCaseName"}, new int[]{R.id.tvSingleItem});
+        SimpleAdapter adapter = new SimpleAdapter(this,TestsList , R.layout.item_link, new String[]{"LINKHardwareTestCaseName"}, new int[]{R.id.tvSingleItem});
         lvTestNames.setAdapter(adapter);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +210,7 @@ public class link_selected extends AppCompatActivity {
                 String inputValue = etEnterQty.getText().toString().trim();
                 int selectedItemPos = position;
                 pos = selectedItemPos;
-                AppCommon.TestCaseId = ListOfTestCases.get(selectedItemPos).get("LINKHardwareTestCaseId");
+                AppCommon.TestCaseId = TestsList.get(selectedItemPos).get("LINKHardwareTestCaseId");
                 //AppCommon.TestCaseId = AppCommon.TestCaseId + caseId;
 
 
@@ -177,7 +235,7 @@ public class link_selected extends AppCompatActivity {
                     SharedPreferences sharedPref = link_selected.this.getSharedPreferences("PulseValue", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     //                   editor.putString("Pulses", inputPulses);
-                    HashMap<String, String> map = ListOfTestCases.get(pos);
+                    HashMap<String, String> map = TestsList.get(pos);
                     inputPulses = map.get("Pulses");
                     editor.putString("Pulses", inputPulses);
                     editor.putString("TestCaseId",AppCommon.TestCaseId);

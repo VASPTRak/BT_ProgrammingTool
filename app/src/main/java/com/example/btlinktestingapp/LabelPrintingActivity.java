@@ -249,7 +249,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public Bitmap textToBitmap(String text, float textSize, int textColor) {
         Bitmap image = null;
         try {
-            text = text + "  "; //+ text + " : " + text;
+            text = text + " : " + text + " : " + text;
 
             Paint paint = new Paint();
             paint.setTextSize(50);
