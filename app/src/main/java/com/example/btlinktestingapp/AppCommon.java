@@ -39,6 +39,7 @@ public class AppCommon {
     public static String selectedLinkType = "";
     public static String selectedBatchID = "";
     public static String Pulses = "";
+    public static String selectedSSID = "";
 
 
 

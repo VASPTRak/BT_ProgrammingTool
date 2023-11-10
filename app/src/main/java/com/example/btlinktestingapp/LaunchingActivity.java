@@ -10,9 +10,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -79,6 +81,11 @@ public class LaunchingActivity extends AppCompatActivity {
         tvSelectLink = (TextView) findViewById(R.id.tvSelectlinkname);
         ListView lvLinknames = (ListView) findViewById(R.id.lvlinknames);
         String[] links = getResources().getStringArray(R.array.links);
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        }
 
 //        for (int i=0;i<links.length;i++){
 //            HashMap<String, String> map = new HashMap<>();

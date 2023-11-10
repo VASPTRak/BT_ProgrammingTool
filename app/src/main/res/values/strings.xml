@@ -25,13 +25,13 @@
         <item>FSGH3</item>
     </string-array>
 
-<!--    <string-array name="Tests">-->
-<!--        <item>Test 1</item>-->
-<!--        <item>Test 2</item>-->
-<!--        <item>Test 3</item>-->
-<!--        <item>Test 4</item>-->
-<!--        <item>Test 5</item>-->
-<!--        <item>Test 6</item>-->
-<!--        <item>Test 7</item>-->
-<!--    </string-array>-->
+    <!--    <string-array name="Tests">-->
+    <!--        <item>Test 1</item>-->
+    <!--        <item>Test 2</item>-->
+    <!--        <item>Test 3</item>-->
+    <!--        <item>Test 4</item>-->
+    <!--        <item>Test 5</item>-->
+    <!--        <item>Test 6</item>-->
+    <!--        <item>Test 7</item>-->
+    <!--    </string-array>-->
 </resources>
