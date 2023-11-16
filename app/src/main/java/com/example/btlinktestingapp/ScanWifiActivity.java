@@ -12,6 +12,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,26 @@ public class ScanWifiActivity extends AppCompatActivity {
     private WifiListAdapter wifiListAdapter;
     private RecyclerView recyclerView;
     private static final String TAG = "ScanWifiActivity";
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.reader, menu);
+        menu.findItem(R.id.mreload).setVisible(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (item.getItemId()) {
+
+            case R.id.mreload:
+                this.recreate();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +71,9 @@ public class ScanWifiActivity extends AppCompatActivity {
                     wifiList.clear();
                     for (ScanResult scanResult : scanResults) {
                         String ssid = scanResult.SSID;
-                        wifiList.add(ssid);
-                    }
+                        if (ssid.startsWith("FS-")) {
+                            wifiList.add(ssid);
+                        }                    }
                     wifiListAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
                 }
             }

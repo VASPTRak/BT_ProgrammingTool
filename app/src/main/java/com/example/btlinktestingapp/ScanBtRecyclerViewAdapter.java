@@ -71,7 +71,11 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
             isBTDeviceFound = true;
         }
         else{
-               holder.parentLayout.setVisibility(View.GONE);
+            if(AppCommon.IsPrint){
+                holder.BTName.setText(mBTNames.get(position));
+                holder.BT_mac.setText(mBTMac.get(position));
+                isBTDeviceFound = true;
+            }
         }
 
         }catch (Exception e){

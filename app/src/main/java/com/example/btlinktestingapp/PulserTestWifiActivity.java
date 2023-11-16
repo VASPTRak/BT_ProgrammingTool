@@ -177,6 +177,7 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
 //                finalQty = 0;
                 layout_prepare_toptest.setVisibility(View.GONE);
                 layout_toptest.setVisibility(View.VISIBLE);
+                System.out.println("Sending relay on command");
                 new CommandsGETRELAY().execute(URL_RELAY);
                 break;
 
@@ -185,6 +186,7 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
                 layout_bottomtest.setVisibility(View.VISIBLE);
                 isBottomTest = true;
                 stopTimer = true;
+                System.out.println("Sending relay on command");
                 new CommandsGETRELAYB().execute(URL_RELAY);
                 break;
 
@@ -206,6 +208,12 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
                 startActivity(intent);
                 break;
 
+            case R.id.btnPrint3:
+                AppCommon.IsPrint = true;
+                AppCommon.LinkNameToPrint = link_name;
+                Intent k = new Intent(PulserTestWifiActivity.this, ScanDeviceActivity.class);
+                startActivity(k);
+                break;
 
 
 
@@ -620,9 +628,9 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
                 resp = response.body().string();
 
             } catch (SocketException se){
-                Log.d("CommandsGetRELAY",se.getMessage());
+                Log.d("CommandsGetRELAYB",se.getMessage());
             }catch (Exception e) {
-                Log.d("CommandsGetRELAY", e.getMessage());
+                Log.d("CommandsGetRELAYB", e.getMessage());
                 //AppConstants.WriteinFile(DisplayMeterActivity.this, "GET RELAY: " + e.getMessage());
             }
 
@@ -683,7 +691,8 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
                 }
             } catch(Exception e){
 
-                System.out.println("CommandsGetRelay PostExecute Ex:"+ e.getMessage());
+                System.out.println("CommandsGetRelayB PostExecute Ex:"+ e.getMessage());
+
             }
 
         }
@@ -708,7 +717,7 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
                 }
 
             }
-        }, 0, 2000);
+        }, 0, 3000);
 
 
     }
@@ -861,7 +870,7 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
 
                     if (result.contains("relay_response")) {
 
-                        if(isBottomTest && Integer.parseInt(counts) > 10 && pulsar_status.equalsIgnoreCase("0") && !isRelayOffCalledB){
+                        if(isBottomTest && Integer.parseInt(counts) > 10 && !isRelayOffCalledB){
                             isRelayOffCalledB = true;
                         }
 
@@ -945,7 +954,7 @@ public class PulserTestWifiActivity extends AppCompatActivity implements View.On
         if (!wifiManager.isWifiEnabled()) {
             // Wi-Fi is disconnected
             isDisconnected = true;
-            new UpdateDetails().execute(link_name, mac_address, batchID, TopTestResult, BottomTestResult, TestcaseId, "");
+            new UpdateDetails().execute(link_name, mac_address, batchID, TopTestResult, BottomTestResult, TestcaseId, counts);
 
         } else {
             // Wi-Fi is still enabled, schedule the next check
