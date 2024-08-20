@@ -65,18 +65,18 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
 
         }
 
-            if (mBTNames.stream().anyMatch(element -> element.contains(AppCommon.selectedLinkType))) {
-            holder.BTName.setText(mBTNames.get(position));
-            holder.BT_mac.setText(mBTMac.get(position));
-            isBTDeviceFound = true;
-        }
-        else{
-            if(AppCommon.IsPrint){
+//            if (mBTNames.stream().anyMatch(element -> element.contains(AppCommon.selectedLinkType))) {
+//            holder.BTName.setText(mBTNames.get(position));
+//            holder.BT_mac.setText(mBTMac.get(position));
+//            isBTDeviceFound = true;
+//        }
+//        else{
+//            if(AppCommon.IsPrint){
                 holder.BTName.setText(mBTNames.get(position));
                 holder.BT_mac.setText(mBTMac.get(position));
                 isBTDeviceFound = true;
-            }
-        }
+//            }
+//        }
 
         }catch (Exception e){
             e.printStackTrace();
@@ -104,7 +104,7 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
                         if (AppCommon.IsPrint) {
                             intent = new Intent(mContext, LabelPrintingActivity.class);
                         } else {
-                            if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y") || !mBTNames.stream().anyMatch(element -> element.startsWith("FSBT"))) {
+                            if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y") || mBTNames.stream().anyMatch(element -> element.startsWith("FSA"))) {
                                 intent = new Intent(mContext, AstPulsarTestActivity.class);
                             } else {
                                 intent = new Intent(mContext, PulsarTestActivity.class);

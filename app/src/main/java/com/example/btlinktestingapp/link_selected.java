@@ -240,7 +240,7 @@ public class link_selected extends AppCompatActivity {
                     editor.putString("Pulses", inputPulses);
                     editor.putString("TestCaseId",AppCommon.TestCaseId);
                     editor.commit();
-                    if(AppCommon.selectedLinkType.startsWith("FS") && !AppCommon.selectedLinkType.startsWith("FSBT")) {
+                    if(AppCommon.selectedLinkType.startsWith("FS-")) {
                         Intent intent1 = new Intent(link_selected.this, ScanWifiActivity.class);
                         startActivity(intent1);
                     }

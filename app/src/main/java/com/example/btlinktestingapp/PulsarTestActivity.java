@@ -854,6 +854,22 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    public void RenameCommand(){
+        if (isConnecting() && !AppCommon.UniqueLinkName.isEmpty()) {
+            try {
+                mBluetoothLeService.writeCustomCharacteristic("LK_COMM=name:" + AppCommon.UniqueLinkName);
+                new setserialnumber().execute(batchID, AppCommon.UniqueLinkName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Toast.makeText(this, "Please check network connection", Toast.LENGTH_LONG).show();
+            AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Please check network connection");
+        }
+
+    }
+
     public class UpdateDetails extends AsyncTask<String, Void, String> {
 
 
@@ -884,6 +900,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 entityClass.TestDateTime = AppCommon.getTodaysDateInString();
                 entityClass.LINKHardwareTestCaseId  = param[5];
                 entityClass.Pulses = param[6];
+                entityClass.LinkTypeFromApp = AppCommon.selectedLinkType;
                 System.out.println(" Pulses stopped:" +entityClass.Pulses );
 
                 Gson gson = new Gson();
@@ -907,7 +924,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 //------------------------------
 
             } catch (Exception e) {
-                serverCallComplete("", false);
+                //serverCallComplete("", false);
                 e.printStackTrace();
                 pd.cancel();
             }
@@ -927,24 +944,31 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
                     String ResponceMessage = jsonObject.getString("ResponseMessage");
                     String UniqueLinkName = jsonObject.getString("UniqueLinkName");
+                    AppCommon.UniqueLinkName = UniqueLinkName;
 
                     if (ResponceMessage.equalsIgnoreCase("success")) {
                         Log.i(TAG, "API Call Success" + result);
-                        serverCallComplete(UniqueLinkName, true);
+                        if(!UniqueLinkName.isEmpty()) {
+                            //serverCallComplete(UniqueLinkName, true);
+                            RenameCommand();
+                        }
+                        else{
+                            Test_Complete_Process();
+                        }
 
                     } else {
                         Log.i(TAG, "API Call fail" + result);
-                        serverCallComplete(UniqueLinkName, false);
+                        //serverCallComplete(UniqueLinkName, false);
                     }
 
                 } catch (JSONException e) {
-                    serverCallComplete("", false);
+                    //serverCallComplete("", false);
                     e.printStackTrace();
                     pd.cancel();
                 }
 
             } else {
-                serverCallComplete("", false);
+                //serverCallComplete("", false);
                 pd.cancel();
                 Log.i(TAG, "GenerateFilesAPI InPost Response err:" + result);
             }
@@ -1119,12 +1143,26 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
         if (b) {
             if (QR_ReaderStatus.equalsIgnoreCase("QR Connected")) {
-
-                FDCheck();
-                edt_batch_number.setVisibility(View.GONE);
-                btn_save_batchid.setVisibility(View.GONE);
-                layout_prepare_toptest.setVisibility(View.VISIBLE);
-                hideKeyboard(PulsarTestActivity.this);
+                if(AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")) {
+                    FDCheck();
+                    edt_batch_number.setVisibility(View.GONE);
+                    btn_save_batchid.setVisibility(View.GONE);
+                    hideKeyboard(PulsarTestActivity.this);
+                    if (isConnecting()) {
+                        try {
+                            new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                else {
+                    FDCheck();
+                    edt_batch_number.setVisibility(View.GONE);
+                    btn_save_batchid.setVisibility(View.GONE);
+                    layout_prepare_toptest.setVisibility(View.VISIBLE);
+                    hideKeyboard(PulsarTestActivity.this);
+                }
 
             } else {
                 Toast.makeText(this, "Please wait. Connecting..", Toast.LENGTH_LONG).show();
@@ -1227,7 +1265,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         @Override
         protected void onPostExecute(String result) {
             AppCommon.FSBT_linkQtyToTest = AppCommon.FSBT_linkQtyToTest -1;
-            if (AppCommon.FSBT_linkQtyToTest == 0){
+            if (AppCommon.FSBT_linkQtyToTest == 0|| AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")){
 
                 btn_finish.setVisibility(View.VISIBLE);
                 btn_print3.setVisibility(View.VISIBLE);
@@ -1271,6 +1309,22 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " setserialnumber InPost Response err: " + result);
             }
 
+        }
+    }
+
+
+    public void Test_Complete_Process(){
+        AppCommon.FSBT_linkQtyToTest = AppCommon.FSBT_linkQtyToTest -1;
+        if (AppCommon.FSBT_linkQtyToTest == 0|| AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")){
+
+            btn_finish.setVisibility(View.VISIBLE);
+            btn_print3.setVisibility(View.VISIBLE);
+            btn_continue.setVisibility(View.GONE);
+
+        }
+        else{
+            btn_continue.setVisibility(View.VISIBLE);
+            btn_print3.setVisibility(View.GONE);
         }
     }
 

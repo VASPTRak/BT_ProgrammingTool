@@ -15,4 +15,5 @@ public class EntityClass {
     public String UniqueLinkName;
     public String LINKHardwareTestCaseId ;
     public String Pulses;
+    public String LinkTypeFromApp;
 }

@@ -162,6 +162,9 @@ public class LaunchingActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = getSharedPreferences(PREFS_ISFIRSTTIME_USE, MODE_PRIVATE).edit();
                 if (isChecked) {
+                    if(AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")) {
+                        chk_changelinkname.setChecked(false);
+                    }
                     AppCommon.chk_astlink_status = "Y";
                     editor.putBoolean("ast_link", true);
                     editor.apply();
@@ -181,6 +184,9 @@ public class LaunchingActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = getSharedPreferences(PREFS_ISFIRSTTIME_USE, MODE_PRIVATE).edit();
                 if (isChecked) {
+                    if(AppCommon.chk_astlink_status.equalsIgnoreCase("Y")) {
+                        chk_astlink.setChecked(false);
+                    }
                     AppCommon.chk_changelinkname_status = "Y";
                     editor.putBoolean("change_link_name", true);
                     editor.apply();
@@ -591,7 +597,14 @@ public class LaunchingActivity extends AppCompatActivity {
 
                 try {
                     HashMap<String, String> selectedHashMap = findHashMapByLinkTypeName(linkList, selectedValue);
-                    Intent intent = new Intent(LaunchingActivity.this, link_selected.class);
+                    Intent intent;
+                    if(AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")){
+                        AppCommon.IsPrint = false;
+                        intent = new Intent(LaunchingActivity.this, ScanDeviceActivity.class);
+                    }
+                    else {
+                        intent = new Intent(LaunchingActivity.this, link_selected.class);
+                    }
                     intent.putExtra("LinkType", selectedValue);
                     intent.putExtra("SelectedHashMap", selectedHashMap);
                     intent.putExtra("ListOfTestCases", ListOfTestCases);

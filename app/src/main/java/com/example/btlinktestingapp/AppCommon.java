@@ -35,6 +35,7 @@ public class AppCommon {
     public static String printerMacAddress = "";
     public static String LinkNameToPrint = "";
     public static String isbtnContinuePressed = "False";
+    public static String UniqueLinkName = "";
     public static String TestCaseId = "";
     public static String selectedLinkType = "";
     public static String selectedBatchID = "";
