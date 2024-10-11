@@ -78,10 +78,10 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
     String TestcaseId;
 
     //btn_pass_test, btn_pass_testb,
-    Button btn_conn_status,  btn_restart_test,  btn_restart_testb, btn_set_no, btn_finish,btn_continue, btn_save_batchid,btn_go_to_top,btn_go_to_bottom, btn_print3;
-    EditText edt_set_no, edt_batch_number;
+    Button btn_conn_status,  btn_restart_test,  btn_restart_testb, btn_set_no, btn_finish,btn_continue, btn_save_batchid,btn_go_to_top,btn_go_to_bottom, btn_print3, btn_save_notes;
+    EditText edt_set_no, edt_batch_number, edt_notes;
     ConstraintLayout layout_toptest, layout_bottomtest,layout_prepare_toptest,layout_prepare_bottomtest;
-    String batchID = "", TopTestResult = "F", BottomTestResult = "F", TestResult = "Incomplete", TestCaseId="", savedBatchID = "" ;
+    String batchID = "", TopTestResult = "F", BottomTestResult = "F", TestResult = "Incomplete", TestCaseId="", savedBatchID = "", Notes = "" ;
     public static boolean topTestPass = false, isSameValueFor10Sec=false;
     public static boolean bottomTestPass = false, isRestartBtnVisible=false, isRestartBtnVisibleB=false, isRestartButtonClicked=false, isRestartButtonClickedB=false;
     int time=0;
@@ -115,6 +115,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         btn_finish = (Button) findViewById(R.id.btn_finish);
         btn_continue = (Button) findViewById(R.id.btn_continue);
         btn_save_batchid = (Button) findViewById(R.id.btn_save_batchid);
+        btn_save_notes = (Button) findViewById(R.id.btn_save_note);
         btn_go_to_top = (Button) findViewById(R.id.btn_go_to_top);
         btn_go_to_bottom = (Button) findViewById(R.id.btn_go_to_bottom);
         btn_print3 = (Button) findViewById(R.id.btnPrint3);
@@ -122,6 +123,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         tv_qtyb = (TextView) findViewById(R.id.tv_qtyb);
         edt_set_no = (EditText) findViewById(R.id.edt_set_no);
         edt_batch_number = (EditText) findViewById(R.id.edt_batch_number);
+        edt_notes = (EditText) findViewById(R.id.edt_note);
         btn_conn_status.setOnClickListener(this);
         //  btn_pass_test.setOnClickListener(this);
         // btn_pass_testb.setOnClickListener(this);
@@ -132,6 +134,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         btn_continue.setOnClickListener(this);
         btn_print3.setOnClickListener(this);
         btn_save_batchid.setOnClickListener(this);
+        btn_save_notes.setOnClickListener(this);
         btn_go_to_top.setOnClickListener(this);
         btn_go_to_bottom.setOnClickListener(this);
 
@@ -154,17 +157,42 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        Toast.makeText(this, "Connecting to the LINK\nPlease wait several seconds...", Toast.LENGTH_SHORT).show();
-        AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Connecting to the LINK (" + mDeviceName + "). Please wait several seconds...");
-        if (AppCommon.isbtnContinuePressed.equalsIgnoreCase("true")) {
-            btn_save_batchid.setEnabled(true);
-        } else {
-            btn_save_batchid.setEnabled(false);
+        if(!AppCommon.IsRetest) {
+            Toast.makeText(this, "Connecting to the LINK\nPlease wait several seconds...", Toast.LENGTH_SHORT).show();
+            AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Connecting to the LINK (" + mDeviceName + "). Please wait several seconds...");
+
+            if (AppCommon.isbtnContinuePressed.equalsIgnoreCase("true")) {
+                btn_save_batchid.setEnabled(true);
+            } else {
+                btn_save_batchid.setEnabled(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (!btn_save_batchid.isEnabled()) {
+                            Toast.makeText(mBluetoothLeService, "Unable to connect to the LINK... Please try again", Toast.LENGTH_LONG).show();
+                            AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Unable to connect to the LINK... Please try again");
+                        }
+
+                    }
+                }, 10000);
+            }
+        }
+
+        else{
+
+            AppCommon.WriteInFile(PulsarTestActivity.this,"**************RETEST**************");
+            edt_batch_number.setVisibility(View.INVISIBLE);
+            btn_save_batchid.setVisibility(View.INVISIBLE);
+            edt_notes.setVisibility(View.VISIBLE);
+            btn_save_notes.setVisibility(View.VISIBLE);
+
+            btn_go_to_top.setEnabled(false);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
 
-                    if (!btn_save_batchid.isEnabled()) {
+                    if (!btn_go_to_top.isEnabled()) {
                         Toast.makeText(mBluetoothLeService, "Unable to connect to the LINK... Please try again", Toast.LENGTH_LONG).show();
                         AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Unable to connect to the LINK... Please try again");
                     }
@@ -175,7 +203,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
          timerTask = new TimerTask() {
             @Override
             public void run() {
-                if (pulseStarted){
+                if (pulseStarted && PulsarTestActivity.btLinkResponse.contains("DISCONNECTED")){
                     if(AppCommon.Pulses.equalsIgnoreCase(String.valueOf(previousQty)) && previousQty!=0 && !isRestartBtnVisible && !isRestartBtnVisibleB) {
 
                         if(!isSameValueFor10Sec) {
@@ -187,7 +215,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                         System.out.println("prevTimeDiffff-----------" + time);
 
                         if(time==10) {
-                            if (AppCommon.Pulses.equalsIgnoreCase(String.valueOf(qty))) {
+                            if (isSameValueFor10Sec) {
 
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -202,15 +230,19 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                                             }
                                             else{
                                                 try {
-                                                    unbindService(mServiceConnection);
-                                                    unregisterReceiver(mGattUpdateReceiver);
-                                                    Thread.sleep(2000);
+
                                                     if(countBTDisconnect < 3) {
+                                                        unbindService(mServiceConnection);
+                                                        unregisterReceiver(mGattUpdateReceiver);
+                                                        Thread.sleep(2000);
                                                         Intent gattServiceIntent = new Intent(PulsarTestActivity.this, BTLinkLeServiceCode.class);
                                                         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
                                                         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
                                                         countBTDisconnect++;
+                                                    }
+                                                    else{
+                                                        countDownTimer();
                                                     }
                                                 }catch (Exception e){
                                                     
@@ -228,15 +260,19 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                                             }
                                             else {
                                                 try {
-                                                    unbindService(mServiceConnection);
-                                                    unregisterReceiver(mGattUpdateReceiver);
-                                                    Thread.sleep(2000);
+
                                                     if(countBTDisconnect < 3) {
+                                                        unbindService(mServiceConnection);
+                                                        unregisterReceiver(mGattUpdateReceiver);
+                                                        Thread.sleep(2000);
                                                         Intent gattServiceIntent = new Intent(PulsarTestActivity.this, BTLinkLeServiceCode.class);
                                                         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
                                                         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
                                                         countBTDisconnect++;
+                                                    }
+                                                    else{
+                                                        countDownTimer();
                                                     }
                                                 }catch (Exception e){
 
@@ -283,11 +319,15 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 SelectBatchIDFromList();
             }
         }
+
+        if(AppCommon.IsRetest) {
+            batchID = AppCommon.batchIDForRetest;
+        }
     }
 
     public void countDownTimer(){
         countBTDisconnect = 0;
-        new CountDownTimer(10000,1000){
+        new CountDownTimer(1000,1000){
 
             @Override
             public void onTick(long l) {
@@ -308,7 +348,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                         layout_toptest.setVisibility(View.GONE);
                         layout_bottomtest.setVisibility(View.GONE);
                         try {
-                            new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses );
+                            new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses, Notes);
                             cancel();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -332,7 +372,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                         layout_toptest.setVisibility(View.GONE);
                         layout_bottomtest.setVisibility(View.GONE);
                         try {
-                            new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses);
+                            new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses, Notes);
                             timerBT.cancel();
                             cancel();
                         } catch (Exception e) {
@@ -422,6 +462,11 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
             if (!btn_save_batchid.isEnabled()) {
                 btn_save_batchid.setEnabled(true);
                 AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Save_batchId button enabled");
+            }
+
+            if (!btn_go_to_top.isEnabled()) {
+                btn_go_to_top.setEnabled(true);
+                AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " GO button enabled");
             }
             final String action = intent.getAction();
             if (BTLinkLeServiceCode.ACTION_GATT_CONNECTED.equals(action)) {
@@ -523,6 +568,22 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 //                layout_prepare_bottomtest.setVisibility(View.VISIBLE);
 //
 //                break;
+
+
+            case R.id.btn_save_note:
+                Notes = edt_notes.getText().toString().trim();
+                if (Notes.equals("")) {
+                    edt_notes.setError("required");
+                    edt_notes.setFocusable(true);
+                }
+                else {
+                    edt_notes.setVisibility(View.INVISIBLE);
+                    btn_save_notes.setVisibility(View.INVISIBLE);
+                    onSuccessBatchId(true, "");
+                }
+
+
+                break;
 
             case R.id.btn_restart_test:
                 btn_restart_test.setVisibility(View.GONE);
@@ -740,6 +801,20 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         dialog.show();
     }
 
+//    public void RelayOnCommand(){
+//        layout_prepare_toptest.setVisibility(View.GONE);
+//        layout_toptest.setVisibility(View.VISIBLE);
+//        finalQty = 0;
+//        mBluetoothLeService.writeCustomCharacteristic("LK_COMM=relay:12345=ON");
+//        isRelayOff = false;
+//    }
+//    public void RelayOnCommandBottomTest(){
+//        layout_prepare_bottomtest.setVisibility(View.GONE);
+//        layout_bottomtest.setVisibility(View.VISIBLE);
+//        finalQty = 0;
+//        mBluetoothLeService.writeCustomCharacteristic("LK_COMM=relay:12345=ON");
+//        isRelayOff = false;
+//    }
 
     public void FDCheck() {
 
@@ -791,6 +866,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                             tv_qtyb.setText("  " + respStr + "  ");
                             splitRespStr(respStr);
                         } else {
+                            pulseStarted = false;
                             //tv_qty.setText("");
                             //tv_qtyb.setText("");
                         }
@@ -901,6 +977,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 entityClass.LINKHardwareTestCaseId  = param[5];
                 entityClass.Pulses = param[6];
                 entityClass.LinkTypeFromApp = AppCommon.selectedLinkType;
+                entityClass.Notes = param[7];
                 System.out.println(" Pulses stopped:" +entityClass.Pulses );
 
                 Gson gson = new Gson();
@@ -1007,7 +1084,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
             public void run() {
 
 
-                if (AppCommon.FSBT_linkQtyToTest == 0){
+                if (AppCommon.FSBT_linkQtyToTest == 0 || AppCommon.FSBT_linkQtyToTest < 0){
                     btn_finish.setVisibility(View.VISIBLE);
                     btn_print3.setVisibility(View.VISIBLE);
                     btn_continue.setVisibility(View.GONE);
@@ -1142,7 +1219,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
 
         if (b) {
-            if (QR_ReaderStatus.equalsIgnoreCase("QR Connected")) {
+            if (QR_ReaderStatus.equalsIgnoreCase("QR Connected") || AppCommon.IsRetest) {
                 if(AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")) {
                     FDCheck();
                     edt_batch_number.setVisibility(View.GONE);
@@ -1150,7 +1227,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                     hideKeyboard(PulsarTestActivity.this);
                     if (isConnecting()) {
                         try {
-                            new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses);
+                            new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses, Notes);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1314,8 +1391,20 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
 
 
     public void Test_Complete_Process(){
+//        if (relayOffCounterTopTest < 4) {
+//            CurrentTest = 1;
+//            RelayOnCommand();
+//            relayOffCounterTopTest++;  // Increment the counter
+//        }
+//
+//        if (relayOffCounterBottomTest < 4 && CurrentQty == 0) {
+//            CurrentTest = 2;
+//            RelayOnCommandBottomTest();
+//            relayOffCounterBottomTest++;  // Increment the counter
+//        }
+
         AppCommon.FSBT_linkQtyToTest = AppCommon.FSBT_linkQtyToTest -1;
-        if (AppCommon.FSBT_linkQtyToTest == 0|| AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y")){
+        if (AppCommon.FSBT_linkQtyToTest == 0|| AppCommon.chk_changelinkname_status.equalsIgnoreCase("Y") || AppCommon.FSBT_linkQtyToTest < 0){
 
             btn_finish.setVisibility(View.VISIBLE);
             btn_print3.setVisibility(View.VISIBLE);
@@ -1325,6 +1414,10 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
         else{
             btn_continue.setVisibility(View.VISIBLE);
             btn_print3.setVisibility(View.GONE);
+        }
+
+        if(AppCommon.IsRetest){
+            AppCommon.IsRetest = false;
         }
     }
 
@@ -1352,7 +1445,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 layout_toptest.setVisibility(View.GONE);
                 layout_bottomtest.setVisibility(View.GONE);
                 try {
-                    new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses);
+                    new UpdateDetails().execute(mDeviceName, mDeviceAddress, batchID, TopTestResult, BottomTestResult, TestcaseId, Pulses, Notes);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1385,7 +1478,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(getApplicationContext(), "Top test pass", Toast.LENGTH_LONG).show();
                     AppCommon.WriteInFile(PulsarTestActivity.this, TAG + " Top test pass");
                     //btn_go_to_bottom.performClick();
-                } else if (CurrentTest == 2 && CurrentQty >= inputValues && finalQty == 0) {
+                } else if (CurrentTest == 2 && CurrentQty > inputValues && finalQty == 0) {
                     //previousQty = CurrentQty;
                     finalQty = CurrentQty;
                     Pulses = String.valueOf(CurrentQty);

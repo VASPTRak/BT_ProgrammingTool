@@ -139,6 +139,7 @@ public class BTLinkLeServiceCode extends Service {
                                 Log.e(TAG, "BluetoothGattDescriptor 1: " + descriptor.getUuid().toString());
                                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                                 gatt.writeDescriptor(descriptor);
+                                gatt.readRemoteRssi();
                             }
 
                         } else {
@@ -187,6 +188,14 @@ public class BTLinkLeServiceCode extends Service {
             super.onDescriptorRead(gatt, descriptor, status);
             gt_notify_status = status;
             gatt_notify = gatt;
+        }
+
+        @Override
+        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+            super.onReadRemoteRssi(gatt, rssi, status);
+            if(AppCommon.TestCaseName.equalsIgnoreCase("Test 5") && AppCommon.selectedLinkType.equalsIgnoreCase("FSBT")) {
+                AppCommon.WriteInFile(BTLinkLeServiceCode.this, "Signal strength: " + rssi + " dBm");
+            }
         }
 
 
@@ -508,6 +517,7 @@ public class BTLinkLeServiceCode extends Service {
             }
 
         }
+        mBluetoothGatt.readRemoteRssi();
 
 
     }

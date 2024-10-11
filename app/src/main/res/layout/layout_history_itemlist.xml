@@ -98,6 +98,37 @@
                 android:layout_height="wrap_content"
                 android:text="Bottom Pulser Test:"
                 android:textColor="#000"
+                android:textSize="22sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text=""
+                android:id="@+id/bottom_pulsar_test"
+                android:textColor="#000"
+                android:layout_centerVertical="true"
+                android:textSize="22sp"/>
+
+            <Button
+                android:id="@+id/btnRetest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="5dp"
+                android:text="Retest"
+                android:textSize="18sp" />
+
+
+
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Test Name:"
+                android:textColor="#000"
                 android:layout_centerVertical="true"
                 android:textSize="22sp"/>
 
@@ -106,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text=""
-                android:id="@+id/bottom_pulsar_test"
+                android:id="@+id/test_name"
                 android:textColor="#000"
                 android:layout_centerVertical="true"
                 android:textSize="22sp"/>

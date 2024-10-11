@@ -48,6 +48,36 @@
         app:layout_constraintTop_toBottomOf="@+id/edt_batch_number"
         app:layout_constraintVertical_bias="0.05" />
 
+    <EditText
+        android:id="@+id/edt_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint=" Enter a Note"
+        android:textAlignment="center"
+        android:textSize="@dimen/NormalButton"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_conn_status"
+        app:layout_constraintVertical_bias="0.017" />
+
+    <Button
+        android:id="@+id/btn_save_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textSize="@dimen/NormalButton"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_batch_number"
+        app:layout_constraintVertical_bias="0.05" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_toptest"
         android:layout_width="match_parent"

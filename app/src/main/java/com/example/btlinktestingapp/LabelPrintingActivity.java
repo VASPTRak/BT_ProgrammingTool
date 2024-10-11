@@ -88,7 +88,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public static Bitmap ImageToPrint;
     protected PrinterStatus printResult;
     protected PrinterInfo printerInfo;
-    Button btn_finish;
+    Button btn_finish, btnPrintNextLabel;
     //public RadioGroup rdSizeGroup;
     //public RadioButton rdSelectedSize;
 
@@ -101,6 +101,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
         AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Started-----");
         EditText etLabelToPrint = (EditText) findViewById(R.id.etLabelToPrint);
         Button btnPrintLabel = (Button) findViewById(R.id.btnPrintLabel);
+        btnPrintNextLabel = (Button) findViewById(R.id.btnPrintLabel1);
         Button btnPreview = (Button) findViewById(R.id.btnPreview);
         Button btn_finish = (Button) findViewById(R.id.btn_finish);
         TextView tvPrinterName = (TextView) findViewById(R.id.tvPrinterName);
@@ -160,8 +161,27 @@ public class LabelPrintingActivity extends AppCompatActivity {
                     } else {
                         AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Entered Label: " + textToPrint);
                         AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "PRINT button clicked.");
-
+                        btnPrintLabel.setVisibility(View.INVISIBLE);
+                        btnPrintNextLabel.setVisibility(View.VISIBLE);
                         PrintLabels1(textToPrint.trim());
+                    }
+                } else {
+                    showMessageDialog(LabelPrintingActivity.this, getResources().getString(R.string.PrinterNotInPairList));
+                }
+            }
+        });
+
+        btnPrintNextLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CheckIfPresentInPairedDeviceList(printerMacAddress)) {
+                    String textToPrint = etLabelToPrint.getText().toString();
+                    if (textToPrint.trim().isEmpty()) {
+                        Toast.makeText(LabelPrintingActivity.this, "Please enter any label to print", Toast.LENGTH_LONG).show();
+                    } else {
+                        AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Entered Label: " + textToPrint);
+                        AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "PRINT button clicked.");
+                        PrintLabelsNext(textToPrint.trim());
                     }
                 } else {
                     showMessageDialog(LabelPrintingActivity.this, getResources().getString(R.string.PrinterNotInPairList));
@@ -235,7 +255,13 @@ public class LabelPrintingActivity extends AppCompatActivity {
         try {
             ImageView ivPreview = (ImageView) findViewById(R.id.iv_Preview);
 
-            Bitmap img = textToBitmap(textToPrint, 50, Color.BLACK);
+            Bitmap img;
+            if(btnPrintNextLabel.getVisibility() == View.VISIBLE) {
+                img = textToBitmapNext(textToPrint, 50, Color.BLACK);
+            }
+            else{
+                img = textToBitmap(textToPrint, 50, Color.BLACK);
+            }
             img = getResizedBitmap(img, img.getWidth() / 2, img.getHeight());
 
             ivPreview.setImageBitmap(img);
@@ -249,7 +275,7 @@ public class LabelPrintingActivity extends AppCompatActivity {
     public Bitmap textToBitmap(String text, float textSize, int textColor) {
         Bitmap image = null;
         try {
-            text = text + " : " + text + " : " + text;
+            //text = text + " : " + text + " : " + text;
 
             Paint paint = new Paint();
             paint.setTextSize(50);
@@ -258,7 +284,34 @@ public class LabelPrintingActivity extends AppCompatActivity {
             //paint.setTypeface(Typeface.DEFAULT);
             paint.setTypeface(ResourcesCompat.getFont(this, R.font.kailasa2));
             float baseline = -paint.ascent();
-            int width = (int) (paint.measureText(text + "   ") + 0.5f);
+            int width = (int) (paint.measureText(text) + 0.5f);
+            int height = (int) (baseline + paint.ascent() + 0.5f);
+            image = Bitmap.createBitmap(width + 20, height + 100, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(image);
+            canvas.drawRect(0, 0, width + 20, height + 100, paint);
+            paint.setColor(textColor);
+            canvas.drawText(text + "   ", 0, baseline, paint);
+
+        } catch (Exception e) {
+            Log.i(TAG, "Exception in textToBitmap: " + e.getMessage());
+            AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in textToBitmap: " + e.getMessage());
+        }
+        return image;
+    }
+
+    public Bitmap textToBitmapNext(String text, float textSize, int textColor) {
+        Bitmap image = null;
+        try {
+            text = text + " : " + text;
+
+            Paint paint = new Paint();
+            paint.setTextSize(50);
+            paint.setColor(Color.WHITE); // Color.parseColor("#FAF9F6")); //#FAF9F6
+            paint.setTextAlign(Paint.Align.LEFT);
+            //paint.setTypeface(Typeface.DEFAULT);
+            paint.setTypeface(ResourcesCompat.getFont(this, R.font.kailasa2));
+            float baseline = -paint.ascent();
+            int width = (int) (paint.measureText(text) + 0.5f);
             int height = (int) (baseline + paint.ascent() + 0.5f);
             image = Bitmap.createBitmap(width + 20, height + 100, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(image);
@@ -341,6 +394,75 @@ public class LabelPrintingActivity extends AppCompatActivity {
             myPrinter.setPrinterInfo(printerInfo);
 
             ImageToPrint = textToBitmap(textToPrint, 50, Color.BLACK);
+            //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
+            ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 2, ImageToPrint.getHeight());
+            //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1_new.png");
+
+            print2();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Exception in PrintLabels1: " + e.getMessage());
+        }
+    }
+
+    public void PrintLabelsNext(String textToPrint) {
+
+        try {
+            //int selectedSize = rdSizeGroup.getCheckedRadioButtonId();
+            //rdSelectedSize = (RadioButton) findViewById(selectedSize);
+
+            String selectedPaperSize = "W12";
+            /*String selectedPaperSizeRD = "12";
+            if (rdSelectedSize != null) {
+                selectedPaperSizeRD = rdSelectedSize.getText().toString().replace("mm", "").trim();
+            }
+            AppCommon.WriteInFile(LabelPrintingActivity.this, TAG + "Selected Paper Size: " + selectedPaperSizeRD + "mm");
+            switch (selectedPaperSizeRD) {
+                case "3.5":
+                    selectedPaperSize = "W3_5";
+                    break;
+                case "6":
+                    selectedPaperSize = "W6";
+                    break;
+                case "9":
+                    selectedPaperSize = "W9";
+                    break;
+                case "12":
+                    selectedPaperSize = "W12";
+                    break;
+                default:
+                    break;
+            }*/
+
+            myPrinter = new Printer();
+            myPrinter.setBluetooth(BluetoothAdapter.getDefaultAdapter());
+
+            printerInfo = myPrinter.getPrinterInfo();
+            printerInfo.printerModel = PrinterInfo.Model.PT_P300BT;
+            printerInfo.port = PrinterInfo.Port.BLUETOOTH;
+            printerInfo.paperSize = PrinterInfo.PaperSize.CUSTOM;
+            printerInfo.orientation = PrinterInfo.Orientation.LANDSCAPE;
+            printerInfo.align = PrinterInfo.Align.LEFT;
+            printerInfo.printMode = PrinterInfo.PrintMode.FIT_TO_PAGE;
+            printerInfo.numberOfCopies = 1;
+            printerInfo.printQuality = PrinterInfo.PrintQuality.HIGH_RESOLUTION;
+            printerInfo.macAddress = printerMacAddress;
+            printerInfo.workPath = getApplicationContext().getCacheDir().getPath(); //String.valueOf(getApplicationContext().getExternalFilesDir("PrintMaterial"));
+            //printerInfo.trimTapeAfterData = true;
+            printerInfo.margin.left = 0;
+            printerInfo.margin.top = 0;
+
+            printerInfo.labelNameIndex = LabelInfo.PT3.valueOf(selectedPaperSize).ordinal();
+            printerInfo.labelMargin = 0;
+            printerInfo.isAutoCut = false;
+            printerInfo.isCutAtEnd = true;
+            printerInfo.isHalfCut = false;
+            printerInfo.isSpecialTape = false;
+            printerInfo.isCutMark = false;
+
+            myPrinter.setPrinterInfo(printerInfo);
+
+            ImageToPrint = textToBitmapNext(textToPrint, 50, Color.BLACK);
             //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1.png");
             ImageToPrint = getResizedBitmap(ImageToPrint, ImageToPrint.getWidth() / 2, ImageToPrint.getHeight());
             //bitmapToFile(LabelPrintingActivity.this, ImageToPrint, "myLabel1_new.png");

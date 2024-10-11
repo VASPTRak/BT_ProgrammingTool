@@ -3,6 +3,7 @@ package com.example.btlinktestingapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -63,6 +64,16 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
         holder.BT_mac.setText(ListOfHistory.get(position).get("MacAddress"));
         holder.top_pulsar_test.setText(ListOfHistory.get(position).get("TopPulserTestResult"));
         holder.bottom_pulsar_test.setText(ListOfHistory.get(position).get("BottomPulserTestResult"));
+        holder.testName.setText(ListOfHistory.get(position).get("LINKHardwareTestCaseName"));
+
+        String topTestResult = ListOfHistory.get(position).get("TopPulserTestResult");
+        String bottomTestResult = ListOfHistory.get(position).get("BottomPulserTestResult");
+
+        if (topTestResult.contains("F") || bottomTestResult.contains("F")) {
+            holder.btn_Retest.setVisibility(View.VISIBLE);
+        } else {
+            holder.btn_Retest.setVisibility(View.GONE);
+        }
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +95,25 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
                 mContext.startActivity(i);
             }
         });
+
+        holder.btn_Retest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String testIdForRetest;
+                AppCommon.IsRetest = true;
+                AppCommon.IsPrint = false;
+                Intent i = new Intent(mContext, ScanDeviceActivity.class);
+                AppCommon.batchIDForRetest = ListOfHistory.get(position).get("BatchId");
+                testIdForRetest = ListOfHistory.get(position).get("LinkHardwareTestCaseId");
+                SharedPreferences sharedPref =mContext.getSharedPreferences("PulseValue", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("TestCaseId",testIdForRetest);
+                editor.apply();
+
+
+                mContext.startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -93,9 +123,9 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView batchid, date_time, BT_name, BT_mac, top_pulsar_test, bottom_pulsar_test;
+        TextView batchid, date_time, BT_name, BT_mac, top_pulsar_test, bottom_pulsar_test, testName;
         LinearLayout parentLayout;
-        Button btn_print3;
+        Button btn_print3, btn_Retest;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -108,6 +138,8 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
             bottom_pulsar_test = itemView.findViewById(R.id.bottom_pulsar_test);
             parentLayout = itemView.findViewById(R.id.parent_layout);
             btn_print3 = itemView.findViewById(R.id.btnPrint3);
+            btn_Retest = itemView.findViewById(R.id.btnRetest);
+            testName = itemView.findViewById(R.id.test_name);
 
         }
     }

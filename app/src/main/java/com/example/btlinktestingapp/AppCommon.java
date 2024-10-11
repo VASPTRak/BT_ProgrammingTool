@@ -30,13 +30,19 @@ public class AppCommon {
     public static String FOLDER_BIN = "FSBin";
     public static boolean IsNewBTFirmware = false;
     public static boolean IsPrint = true;
+    public static boolean IsRetest = false;
     //public static boolean IsPrintFromHistory = true;
     public static int FSBT_linkQtyToTest = 1;
     public static String printerMacAddress = "";
     public static String LinkNameToPrint = "";
     public static String isbtnContinuePressed = "False";
+    public static String batchIDForRetest = "";
+    public static String testIdForRetest = "";
+
     public static String UniqueLinkName = "";
     public static String TestCaseId = "";
+    public static int Quantity = 0;
+    public static String TestCaseName = "";
     public static String selectedLinkType = "";
     public static String selectedBatchID = "";
     public static String Pulses = "";

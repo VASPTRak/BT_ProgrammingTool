@@ -139,12 +139,13 @@ public class HistoryActivity extends AppCompatActivity {
                            String TestDateTime = jobj.getString("TestDateTime");
                            String UniqueLinkName = jobj.getString("UniqueLinkName");
                            String MacAddress = jobj.getString("MacAddress");
-
+                           String testName = jobj.getString("LINKHardwareTestCaseName");
+                           String testId = jobj.getString("LinkHardwareTestCaseId");
 
                            String TopPulserTestResult = jobj.getString("TopPulserTestResult");
                            String BottomPulserTestResult = jobj.getString("BottomPulserTestResult");
 
-                            String LinkNameFromAPP = jobj.getString("LinkNameFromAPP");
+                           String LinkNameFromAPP = jobj.getString("LinkNameFromAPP");
 
                             HashMap<String, String> map = new HashMap<>();
                             map.put("BatchId", BatchId);
@@ -154,6 +155,8 @@ public class HistoryActivity extends AppCompatActivity {
                             map.put("TopPulserTestResult", TopPulserTestResult);
                             map.put("BottomPulserTestResult", BottomPulserTestResult);
                             map.put("LinkNameFromAPP", LinkNameFromAPP);
+                            map.put("LINKHardwareTestCaseName",testName);
+                            map.put("LinkHardwareTestCaseId", testId);
 
                             ListOfHistoryData.add(map);
 

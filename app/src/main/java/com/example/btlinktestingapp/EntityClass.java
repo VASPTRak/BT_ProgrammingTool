@@ -10,6 +10,7 @@ public class EntityClass {
     public String TestDateTime;
     public String AssignUniqueLinkName;
     public String IsASTLink ;
+    public String Notes;
 
 
     public String UniqueLinkName;

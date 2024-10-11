@@ -208,9 +208,13 @@ public class link_selected extends AppCompatActivity {
 
 
                 String inputValue = etEnterQty.getText().toString().trim();
+//                if(!inputValue.isEmpty()) {
+//                    AppCommon.Quantity = Integer.parseInt(inputValue);
+//                }
                 int selectedItemPos = position;
                 pos = selectedItemPos;
                 AppCommon.TestCaseId = TestsList.get(selectedItemPos).get("LINKHardwareTestCaseId");
+                AppCommon.TestCaseName = TestsList.get(selectedItemPos).get("LINKHardwareTestCaseName");
                 //AppCommon.TestCaseId = AppCommon.TestCaseId + caseId;
 
 
