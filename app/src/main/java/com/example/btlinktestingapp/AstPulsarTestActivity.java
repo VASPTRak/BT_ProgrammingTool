@@ -280,7 +280,7 @@ public class AstPulsarTestActivity extends AppCompatActivity implements View.OnC
                 map.put("batchID", value);
 
                 batchIDList.add(map);
-                SelectBatchIDFromList();
+                //SelectBatchIDFromList();
             }
         }
 

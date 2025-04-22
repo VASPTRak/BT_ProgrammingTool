@@ -104,7 +104,7 @@ public class ScanBtRecyclerViewAdapter extends RecyclerView.Adapter<ScanBtRecycl
                         if (AppCommon.IsPrint) {
                             intent = new Intent(mContext, LabelPrintingActivity.class);
                         } else {
-                            if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y") || mBTNames.stream().anyMatch(element -> element.startsWith("FSA"))) {
+                            if (AppCommon.chk_astlink_status.equalsIgnoreCase("Y") || mBTNames.stream().anyMatch(element -> element.startsWith("FSA") || mBTNames.stream().anyMatch(element1 -> element1.startsWith("FSG") || mBTNames.stream().anyMatch(element2 -> element2.startsWith("FSFH"))))) {
                                 intent = new Intent(mContext, AstPulsarTestActivity.class);
                             } else {
                                 intent = new Intent(mContext, PulsarTestActivity.class);

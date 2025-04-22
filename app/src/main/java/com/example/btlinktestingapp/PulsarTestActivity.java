@@ -316,7 +316,7 @@ public class PulsarTestActivity extends AppCompatActivity implements View.OnClic
                 map.put("batchID", value);
 
                 batchIDList.add(map);
-                SelectBatchIDFromList();
+                //SelectBatchIDFromList();
             }
         }
 
