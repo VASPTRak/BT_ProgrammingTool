@@ -194,7 +194,10 @@ public class BTLinkLeServiceCode extends Service {
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             super.onReadRemoteRssi(gatt, rssi, status);
             if(AppCommon.TestCaseName.equalsIgnoreCase("Test 5") && AppCommon.selectedLinkType.equalsIgnoreCase("FSBT")) {
-                AppCommon.WriteInFile(BTLinkLeServiceCode.this, "Signal strength: " + rssi + " dBm");
+                //AppCommon.WriteInFile(BTLinkLeServiceCode.this, "Signal strength: " + rssi + " dBm");
+                Intent dataIntent = new Intent(BTLinkLeServiceCode.ACTION_DATA_AVAILABLE);
+                dataIntent.putExtra("EXTRA_RSSI", rssi);
+                sendBroadcast(dataIntent);
             }
         }
 
